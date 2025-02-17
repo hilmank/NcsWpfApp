@@ -1,6 +1,4 @@
-```md
-# NcsWpfApp 🎯
-
+# NcsWpfApp  
 A **.NET Framework WPF-based application** built using the **MVVM design pattern**, supporting **RFID login** and a **touchscreen interface**. This project is designed for **desktop environments**, featuring a clean UI and a structured architecture.
 
 ---
@@ -17,24 +15,16 @@ A **.NET Framework WPF-based application** built using the **MVVM design pattern
 
 ## 📂 Project Structure
 ```
-NcsWpfApp/
-│-- NcsWpfApp.sln                 # Solution file
-│-- Ncs.WpfApp/                    # Main WPF project
-│   ├── Views/                      # UI (XAML)
-│   ├── ViewModels/                  # MVVM ViewModels
-│   ├── Models/                      # Data models
-│   ├── Services/                    # Business logic & API calls
-│   ├── Helpers/                      # Utility classes
-│   ├── Converters/                   # XAML Value Converters
-│   ├── Themes/                       # UI Styles & Themes
-│   ├── App.xaml                      # Application Entry Point
-│   ├── MainWindow.xaml                # Main Window UI
-│   ├── MainWindow.xaml.cs             # Main Window Logic
-│   ├── UserSignInWindow.xaml          # Login Window UI
-│   ├── UserSignInWindow.xaml.cs       # Login Window Logic
-│   ├── Ncs.WpfApp.csproj              # Project File
-│   ├── bin/ & obj/                    # Build & output files
-│-- README.md                          # Documentation
+📦 NcsWpfApp
+ ├── 📂 Ncs.WpfApp            # Main WPF project
+ │   ├── 📂 Views             # UI (XAML)
+ │   ├── 📂 ViewModels        # MVVM ViewModels
+ │   ├── 📂 Models            # Data models
+ │   ├── 📂 Services          # Business logic & API calls
+ │   ├── 📂 Helpers           # Utility classes
+ │   ├── 📂 Converters        # XAML Value Converters
+ │   ├── 📂 Themes            # UI Styles & Themes
+
 ```
 
 ---
@@ -46,7 +36,6 @@ NcsWpfApp/
 - **C#**
 - **XAML**
 - **RFID Integration**
-- **Dapper (if used for data access)**
 - **FluentValidation (if used for validation)**
 
 ---
@@ -55,7 +44,7 @@ NcsWpfApp/
 
 ### **1️⃣ Clone the Repository**
 ```sh
-git clone https://github.com/YOUR_USERNAME/NcsWpfApp.git
+git clone https://github.com/hilmank/NcsWpfApp.git
 cd NcsWpfApp
 ```
 
@@ -73,7 +62,7 @@ cd NcsWpfApp
 
 ### **RFID Reader Setup**
 - Ensure the RFID reader is connected to the correct **COM Port**.
-- Modify settings in `app.config` or `UserSettings.json` (if available).
+- Modify settings in `app.config`.
 
 ### **App Settings**
 - Change configurations in `App.xaml.cs` (if required).
@@ -83,15 +72,6 @@ cd NcsWpfApp
 
 ## 📌 Screenshots (Optional)
 _Add UI screenshots here if available._
-
----
-
-## 🤝 Contributing
-Contributions are welcome! If you’d like to improve this project:
-1. **Fork** the repository.
-2. **Create a new branch** (`feature-new-functionality`).
-3. **Commit your changes**.
-4. **Submit a Pull Request**.
 
 ---
 
