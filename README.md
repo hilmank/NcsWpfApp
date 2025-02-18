@@ -71,7 +71,18 @@ cd NcsWpfApp
 ---
 
 ## 📌 Screenshots (Optional)
-_Add UI screenshots here if available._
+### Login Page ###
+![image](https://github.com/user-attachments/assets/3efe5941-fbdd-45e8-b68a-276320540601)
+### Admin Page ###
+#### Red Mode ####
+![image](https://github.com/user-attachments/assets/5175eb18-07b8-4ef0-a147-e2ace1836b77)
+#### Light Mode ####
+![image](https://github.com/user-attachments/assets/aaa9a906-8413-42bb-b39d-eb84a4afd099)
+#### Dark Mode ####
+![image](https://github.com/user-attachments/assets/48d3c4a2-51bc-4483-a1bc-a9a92ce27fb1)
+#### Input New User ####
+![image](https://github.com/user-attachments/assets/a8bce467-a9ed-46f9-961b-4ca513c6eb5e)
+
 
 ---
 
