@@ -1,17 +1,13 @@
-﻿using Ncs.WfpApp.Models;
-using Ncs.WfpApp.Services.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using Ncs.WpfApp.Helpers;
+using Ncs.WpfApp.Models;
+using Ncs.WpfApp.Services.Interfaces;
+using Ncs.WpfApp.Views;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows;
-using Ncs.WfpApp.Helpers;
+using System.Windows.Input;
 
-namespace Ncs.WfpApp.ViewModels
+namespace Ncs.WpfApp.ViewModels
 {
     public class UserSignInViewModel : INotifyPropertyChanged
     {
@@ -21,11 +17,13 @@ namespace Ncs.WfpApp.ViewModels
         private string _errorMessage = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
+        public ICommand SignInCommand { get; }
+        public ICommand ExitCommand { get; }
         public UserSignInViewModel(IUserService userService)
         {
             _userService = userService;
             SignInCommand = new RelayCommand(async () => await SignInAsync(), CanSignIn);
+            ExitCommand = new RelayCommand(ExitApplication, ()=>true);
         }
 
         public string Username
@@ -59,29 +57,85 @@ namespace Ncs.WfpApp.ViewModels
                 OnPropertyChanged();
             }
         }
+        private bool _isSignedIn;
+        public bool IsSignedIn
+        {
+            get => _isSignedIn;
+            set
+            {
+                _isSignedIn = value;
+                OnPropertyChanged();
+                ((RelayCommand)SignInCommand).RaiseCanExecuteChanged();
+            }
+        }
 
-        public ICommand SignInCommand { get; }
 
         private async Task SignInAsync()
         {
             var user = new UserSignInModel { Username = Username, Password = Password };
-            bool isAuthenticated = await _userService.SignInAsync(user);
-
-            if (isAuthenticated)
+            var result = await _userService.SignInAsync(user);
+            bool isAuthenticated = result.Success;
+            ErrorMessage = string.Empty;
+            if (isAuthenticated && result.Data != null)
             {
-                MessageBox.Show("Sign-in successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    SessionManager.SetToken(token: result.Data.Token);
+                    var adminWindow = new AdminWindow();
+                    adminWindow.Show();
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is UserSignInWindow userSignInWindow)
+                        {
+                            if (userSignInWindow.DataContext is UserSignInViewModel viewModel)
+                            {
+                                if (viewModel.IsSignedIn)
+                                {
+                                    CloseAllWindowsExcept(userSignInWindow);
+                                    viewModel.IsSignedIn = false; // ✅ Reset sign-in status
+                                    viewModel.ClearInputs();  // ✅ Clear all input fields
+                                }
+                                else
+                                {
+                                    viewModel.IsSignedIn = true;  // ✅ User is now signed in
+                                }
+                            }
+                            break;
+                        }
+                    }
+                });
             }
             else
             {
-                ErrorMessage = "Invalid username or password!";
+                ErrorMessage = result.MessageDetail ?? "An unknown error occurred.";
             }
         }
 
-        private bool CanSignIn() => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
+        private bool CanSignIn() => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) || IsSignedIn;
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        private void CloseAllWindowsExcept(Window keepWindow)
+        {
+            foreach (Window window in Application.Current.Windows.Cast<Window>().ToList())
+            {
+                if (window != keepWindow)
+                {
+                    window.Close();
+                }
+            }
+        }
+        public void ClearInputs()
+        {
+            Username = string.Empty;
+            Password = string.Empty;
+            ErrorMessage = string.Empty;
+        }
+        private void ExitApplication()
+        {
+            Application.Current.Shutdown(); 
         }
     }
 }

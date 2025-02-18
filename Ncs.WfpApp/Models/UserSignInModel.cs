@@ -1,4 +1,4 @@
-﻿namespace Ncs.WfpApp.Models
+﻿namespace Ncs.WpfApp.Models
 {
     public class UserSignInModel
     {

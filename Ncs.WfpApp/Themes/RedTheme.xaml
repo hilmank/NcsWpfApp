@@ -1,0 +1,28 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- General Colors -->
+    <SolidColorBrush x:Key="PrimaryBackground" Color="#8B0000"/>
+    <!-- Dark Red -->
+    <SolidColorBrush x:Key="PrimaryText" Color="#FFFFFF"/>
+    <!-- White -->
+    <SolidColorBrush x:Key="SecondaryText" Color="#E0E0E0"/>
+    <!-- ??? -->
+    <SolidColorBrush x:Key="BorderBrushColor" Color="#CCCCCC"/>
+    <!-- Light Gray -->
+    <SolidColorBrush x:Key="ButtonBackground" Color="#FF4500"/>
+    <!-- Orange Red -->
+    <SolidColorBrush x:Key="ButtonForeground" Color="#FFFFFF"/>
+    <!-- White -->
+    <SolidColorBrush x:Key="TextBoxBackground" Color="#B22222"/>
+    <!-- Firebrick Red -->
+    <SolidColorBrush x:Key="PanelBackground" Color="#A52A2A"/>
+    <!-- Brownish Red -->
+    <SolidColorBrush x:Key="PanelTitleBackground" Color="#DC143C"/>
+    <!-- Crimson -->
+    <SolidColorBrush x:Key="HoverColor" Color="#FF6347"/>
+    <!-- Tomato -->
+    <SolidColorBrush x:Key="PressedColor" Color="#CD5C5C"/>
+    <!-- Indian Red -->
+
+</ResourceDictionary>

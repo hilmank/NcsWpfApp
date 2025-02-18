@@ -1,0 +1,140 @@
+﻿<Window x:Class="Ncs.WpfApp.Views.UserAddWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ncs.WpfApp.Views"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        Title="Add New User" Height="600" Width="800"
+        Background="{DynamicResource PrimaryBackground}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="80*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0"
+                   Style="{DynamicResource ThemedLabel}"
+                   Content="Input New User" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center" 
+                   FontSize="20"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Column Inputs -->
+            <Border
+                    Grid.Column="0"
+                    BorderThickness="1" 
+                    BorderBrush="{DynamicResource  BorderBrushColor}" 
+                    Background="{DynamicResource PanelTitleBackground}" 
+                    CornerRadius="10" 
+                    Margin="5,5,5,5" 
+                    Grid.RowSpan="2">
+                <StackPanel>
+                    <Label Content="RFID Number" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0" />
+                    <TextBox Text="{Binding RfidTag}" Style="{DynamicResource ThemedTextBox}" Margin = "15, 0, 15, 10"/>
+
+                    <Label Content="Username" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0" />
+                    <TextBox Text="{Binding Username}" Style="{DynamicResource ThemedTextBox}" Margin="15, 0, 15, 10"/>
+
+                    <Label Content="First Name" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <TextBox Text="{Binding Firstname}" Style="{DynamicResource ThemedTextBox}" Margin="15, 0, 15, 10"/>
+
+
+                    <Label Content="Middle Name" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <TextBox Text="{Binding Middlename}" Style="{DynamicResource ThemedTextBox}" Margin="15, 0, 15, 10"/>
+
+                    <Label Content="Last Name" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <TextBox Text="{Binding Lastname}" Style="{DynamicResource ThemedTextBox}" Margin="15, 0, 15, 10"/>
+
+                    <Label Content="Address" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <TextBox Text="{Binding Address}" Style="{DynamicResource ThemedTextBox}" Margin="15, 0, 15, 10"/>
+
+                    <Label Content="Email" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <TextBox Text="{Binding Email}" Style="{DynamicResource ThemedTextBox}" Margin="15, 0, 15, 10"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Right Column Inputs -->
+            <Border
+                    Grid.Column="1"
+                    BorderThickness="1" 
+                    BorderBrush="{DynamicResource  BorderBrushColor}" 
+                    Background="{DynamicResource PanelTitleBackground}" 
+                    CornerRadius="10" 
+                    Margin="5,5,5,5" 
+                    >
+                <StackPanel>
+                    <Label Content="Phone Number" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <TextBox Text="{Binding PhoneNumber}" Style="{DynamicResource ThemedTextBox}" Margin="15, 0, 15, 10"/>
+
+                    <Label Content="Employee Number" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <TextBox Text="{Binding EmployeeNumber}" Style="{DynamicResource ThemedTextBox}" Margin="15, 0, 15, 10"/>
+
+                    <Label Content="Company" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <ComboBox ItemsSource="{Binding Companies}"
+                              SelectedValue="{Binding SelectedCompanyId, Mode=TwoWay}"
+                              Style="{DynamicResource ThemedComboBox}"
+                              DisplayMemberPath="Name"
+                              SelectedValuePath="Id"
+                              FontSize="16"
+                              Margin="15, 0, 15, 10"/>
+
+                    <Label Content="Guest Company Name" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <TextBox Text="{Binding GuestCompanyName}" Style="{DynamicResource ThemedTextBox}" Margin="15, 0, 15, 10"/>
+
+                    <Label Content="Personal Type Id" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <ComboBox ItemsSource="{Binding PersonalIdTypes}"
+                              SelectedValue="{Binding SelectedPersonalIdType, Mode=TwoWay}"
+                              Style="{DynamicResource ThemedComboBox}"
+                              DisplayMemberPath="Name"
+                              SelectedValuePath="Id"
+                              FontSize="16"
+                              Margin="15, 0, 15, 10"/>
+
+                    <Label Content="Personal Id Number" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <TextBox Text="{Binding PersonalIdNumber}" Style="{DynamicResource ThemedTextBox}" Margin="15, 0, 15, 10"/>
+
+                    <Label Content="Role" Style="{DynamicResource ThemedLabel}" Margin = "10, -5, 15, 0"/>
+                    <ComboBox ItemsSource="{Binding Roles}"
+                              SelectedValue="{Binding SelectedRole, Mode=TwoWay}"
+                              Style="{DynamicResource ThemedComboBox}"
+                              DisplayMemberPath="Name"
+                              SelectedValuePath="Id"
+                              FontSize="16"
+                              Margin="15, 0, 15, 10"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Buttons Section -->
+    <Border Grid.Row="2"
+                BorderThickness="1" 
+                BorderBrush="{DynamicResource  BorderBrushColor}" 
+                Background="{DynamicResource PanelTitleBackground}" 
+                CornerRadius="10" 
+                Margin="5,5,5,5" 
+                Grid.RowSpan="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" >
+                <Button 
+                Style="{DynamicResource ThemedButton}"
+                Content="Save" 
+                Command="{Binding SaveCommand}" 
+                Margin="0,0,5,0"/>
+                <Button 
+                Style="{DynamicResource ThemedButton}"
+                Content="Cancel" 
+                Command="{Binding CancelCommand}" 
+                Margin="5,0,0,0"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+
+</Window>

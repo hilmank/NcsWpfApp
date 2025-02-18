@@ -1,0 +1,263 @@
+﻿<Window x:Class="Ncs.WpfApp.Views.CustomerWindow" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Customer Page" 
+        Height="600" Width="1000"
+        Background="{DynamicResource PrimaryBackground}">
+
+    <Grid>
+        <!-- Define Row Definitions for Header, Content, and Footer -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15*"/>
+            <!-- Header -->
+            <RowDefinition Height="80*"/>
+            <!-- Content -->
+            <RowDefinition Height="5*"/>
+            <!-- Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- ================== HEADER SECTION ================== -->
+        <Grid Grid.Row="0" Background="{DynamicResource PanelTitleBackground}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="30*"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0">
+                <StackPanel>
+                    <Label 
+                        Content="CURRENT CUSTOMER" 
+                        Style="{DynamicResource ThemedLabel}"
+                        FontSize="16"
+                        FontWeight="Bold"></Label>
+                    <Label 
+                        Name="lblCustomerInfo" 
+                        Content="EMP_NO / EMP_NAME / COMPANY" Style="{DynamicResource ThemedLabel}"
+                        Margin="20,0,0,0" VerticalAlignment="Top"></Label>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1">
+                <StackPanel>
+                    <Grid>
+                        <TextBox Name="txtRfid" 
+                                 Margin="0,5,0,5"
+                                 Height="30" 
+                                 Width="250" 
+                                 Background="{DynamicResource TextBoxBackground}" 
+                                 Foreground="{DynamicResource PrimaryText}" />
+                    </Grid>
+                    <Button x:Name="btnCancel" 
+                        Content="CANCEL" 
+                        HorizontalAlignment="Center" 
+                        Width="100" 
+                        Height="35" 
+                        Background="{DynamicResource ButtonBackground}"
+                        Foreground="{DynamicResource ButtonForeground}" 
+                        FontWeight="Bold" 
+                        BorderThickness="0"
+                        Margin="0,5,0,5" />
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="2">
+
+            </Border>
+
+        </Grid>
+
+
+        <!-- ================== CONTENT SECTION ================== -->
+        <Grid Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="15*"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="85*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" 
+                       Content=" Today's Japanese Menus" 
+                       Style="{DynamicResource ThemedLabel}"
+                       FontSize="40"
+                       FontWeight="ExtraBold"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+                <Rectangle Grid.Row="1" Height="2" Fill="{DynamicResource PrimaryText}" HorizontalAlignment="Stretch"/>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="50*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Border BorderThickness="1" 
+                                BorderBrush="{DynamicResource  BorderBrushColor}" 
+                                Background="{DynamicResource PanelTitleBackground}" 
+                                CornerRadius="10" 
+                                Margin="5,5,5,5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10*"/>
+                                    <RowDefinition Height="50*"/>
+                                    <RowDefinition Height="16*"/>
+                                    <RowDefinition Height="24*"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Row="0" 
+                                       Name="lblMenuName1" 
+                                       Content="Menu 1" 
+                                       Style="{DynamicResource ThemedLabel}"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                                <Image Grid.Row="1"
+                                       Name="imgMenu1"
+                                       Source="/Assets/image_1.png" 
+                                       Stretch="UniformToFill"/>
+
+                                <StackPanel Grid.Row="2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80*"/>
+                                            <ColumnDefinition Width="20*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Column="0" 
+                                               Name="lblMenuDescription1" 
+                                               Content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." 
+                                               Style="{DynamicResource ThemedLongTextLabel}"
+                                               HorizontalAlignment="Left"
+                                               MaxWidth="400"/>
+
+                                        <Label Grid.Column="1"
+                                               Name="lblMenuCalories1"
+                                               Content="345 Cals"
+                                               Style="{DynamicResource ThemedLabel}"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Top"
+                                               FontSize="16"
+                                               FontWeight="Bold"/>
+                                    </Grid>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="3">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="10*"/>
+                                            <RowDefinition Height="90*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Grid.Row="0" 
+                                               Content="Number of Available Stock" 
+                                               Style="{DynamicResource ThemedLabel}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Top"
+                                               FontSize="30"
+                                               FontWeight="Bold"/>
+
+                                        <Label Grid.Row="1"
+                                               Name="lblNumberStock"
+                                               Content="123 PAX"
+                                               Style="{DynamicResource ThemedLabel}"
+                                               VerticalAlignment="Top"
+                                               HorizontalAlignment="Center"
+                                               FontSize="40"
+                                               FontWeight="Bold"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Border BorderThickness="1" 
+                                BorderBrush="{DynamicResource  BorderBrushColor}" 
+                                Background="{DynamicResource PanelTitleBackground}" 
+                                CornerRadius="10" 
+                                Margin="5,5,5,5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10*"/>
+                                    <RowDefinition Height="50*"/>
+                                    <RowDefinition Height="16*"/>
+                                    <RowDefinition Height="24*"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Row="0" 
+                                       Name="lblMenuName2" 
+                                       Content="Menu 2" 
+                                       Style="{DynamicResource ThemedLabel}"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                                <Image Grid.Row="1"
+                                       Name="imgMenu2"
+                                       Source="/Assets/image_2.png" 
+                                       Stretch="UniformToFill"/>
+
+                                <StackPanel Grid.Row="2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80*"/>
+                                            <ColumnDefinition Width="20*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Column="0" 
+                                               Name="lblMenuDescription2" 
+                                               Content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." 
+                                               Style="{DynamicResource ThemedLongTextLabel}"
+                                               HorizontalAlignment="Left"
+                                               MaxWidth="400"/>
+
+                                        <Label Grid.Column="1"
+                                               Name="lblMenuCalories2"
+                                               Content="345 Cals"
+                                               Style="{DynamicResource ThemedLabel}"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Top"
+                                               FontSize="16"
+                                               FontWeight="Bold"/>
+                                    </Grid>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="3">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="10*"/>
+                                            <RowDefinition Height="90*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Grid.Row="0" 
+                                               Content="Number of Available Stock" 
+                                               Style="{DynamicResource ThemedLabel}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Top"
+                                               FontSize="30"
+                                               FontWeight="Bold"/>
+
+                                        <Label Grid.Row="1"
+                                               Name="lblNumberStock2"
+                                               Content="123 PAX"
+                                               Style="{DynamicResource ThemedLabel}"
+                                               VerticalAlignment="Top"
+                                               HorizontalAlignment="Center"
+                                               FontSize="40"
+                                               FontWeight="Bold"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <!-- ================== FOOTER SECTION (Real-time Date & Time) ================== -->
+        <Grid Grid.Row="2" Background="{DynamicResource PanelTitleBackground}">
+            <TextBlock x:Name="DateTimeText" FontSize="16" Foreground="{DynamicResource PrimaryText}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+        </Grid>
+    </Grid>
+</Window>

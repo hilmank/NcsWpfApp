@@ -1,0 +1,38 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Backgrounds -->
+    <SolidColorBrush x:Key="PrimaryBackground" Color="#1E1E1E"/>
+    <!-- Dark gray background -->
+    <SolidColorBrush x:Key="PanelBackground" Color="#252526"/>
+    <!-- Slightly lighter for contrast -->
+    <SolidColorBrush x:Key="PanelTitleBackground" Color="#333333"/>
+    <!-- Header sections -->
+    <SolidColorBrush x:Key="TextBoxBackground" Color="#2D2D30"/>
+    <!-- Dark input fields -->
+
+    <!-- Text Colors -->
+    <SolidColorBrush x:Key="PrimaryText" Color="#FFFFFF"/>
+    <!-- White text for high contrast -->
+    <SolidColorBrush x:Key="SecondaryText" Color="#B0B0B0"/>
+    <!-- Lighter gray for secondary text -->
+
+    <!-- Borders -->
+    <SolidColorBrush x:Key="BorderBrushColor" Color="#444444"/>
+    <!-- Softer dark border -->
+
+    <!-- Buttons -->
+    <SolidColorBrush x:Key="ButtonBackground" Color="#3D3D3D"/>
+    <!-- Dark gray for buttons -->
+    <SolidColorBrush x:Key="ButtonForeground" Color="#FFFFFF"/>
+    <!-- White text for contrast -->
+    <SolidColorBrush x:Key="ButtonBorder" Color="#555555"/>
+    <!-- Slightly lighter border -->
+
+    <!-- Hover and Pressed States -->
+    <SolidColorBrush x:Key="HoverColor" Color="#555555"/>
+    <!-- Lighter gray for hover effect -->
+    <SolidColorBrush x:Key="PressedColor" Color="#777777"/>
+    <!-- Even lighter for pressed state -->
+
+</ResourceDictionary>

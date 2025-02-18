@@ -1,23 +1,126 @@
-﻿<Window x:Class="Ncs.WfpApp.Views.UserSignInWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Ncs.WfpApp.Views"
-        mc:Ignorable="d"
-        Title="UserSignInWindow" Height="300" Width="400">
+﻿<Window 
+    x:Class="Ncs.WpfApp.Views.UserSignInWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Canteen Application" 
+    Height="450" 
+    Width="400"
+    WindowStartupLocation="CenterScreen"
+    ResizeMode="NoResize"
+    WindowStyle="None"
+    xmlns:local="clr-namespace:Ncs.WpfApp.Converters"
+    Background="{DynamicResource PrimaryBackground}">
+    <Window.Resources>
+        <local:BooleanToSignInTextConverter x:Key="BooleanToSignInTextConverter"/>
+    </Window.Resources>
     <Grid>
-        <StackPanel Margin="20">
-            <TextBlock Text="Username:"/>
-            <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="35*"/>
+            <RowDefinition Height="55*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0"
+                   Style="{DynamicResource ThemedLabel}"
+                   Content="Canteen Application" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center" 
+                   FontSize="20"/>
 
-            <TextBlock Text="Password:" Margin="0,10,0,0"/>
-            <PasswordBox x:Name="PasswordBox"
-                         PasswordChanged="PasswordBox_PasswordChanged"/>
+        <StackPanel Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="13*"/>
+                    <RowDefinition Height="27*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0"
+                        BorderThickness="1" 
+                        BorderBrush="{DynamicResource  BorderBrushColor}" 
+                        Background="{DynamicResource PanelTitleBackground}" 
+                        CornerRadius="10" 
+                        Margin="5,5,5,5" Grid.RowSpan="2">
+                    <StackPanel>
+                        <Label  
+                                Style="{DynamicResource ThemedLabel}"
+                                Content="Theme:"/>
+                        <ComboBox 
+                                x:Name="ThemeSelector" 
+                                Width="150" 
+                                Height="30"
+                                VerticalAlignment="Center"
+                                SelectionChanged="ThemeSelector_SelectionChanged"
+                                Style="{DynamicResource ThemedComboBox}">
+                            <ComboBoxItem Content="Light Theme" Style="{DynamicResource ThemedComboBoxItem}" IsSelected="True"/>
+                            <ComboBoxItem Content="Dark Theme" Style="{DynamicResource ThemedComboBoxItem}"/>
+                            <ComboBoxItem Content="Red Theme" Style="{DynamicResource ThemedComboBoxItem}"/>
+                        </ComboBox>
+                        <Button 
+                            Style="{DynamicResource ThemedButton}"
+                            Content="Exit" 
+                            Command="{Binding ExitCommand}" 
+                            Margin="0,20,0,0"/>
 
-            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red"/>
-
-            <Button Content="Sign In" Command="{Binding SignInCommand}" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border 
+                        Grid.Column="1"
+                        BorderThickness="1" 
+                        BorderBrush="{DynamicResource  BorderBrushColor}" 
+                        Background="{DynamicResource PanelTitleBackground}" 
+                        CornerRadius="10" 
+                        Margin="5,5,5,5" Grid.RowSpan="2">
+                    <StackPanel Grid.Row="1" >
+                        <Image 
+                               x:Name="ImageCustomer" 
+                               Source="/Assets/canteen_02.png" 
+                               MouseLeftButtonDown="Image_MouseLeftButtonDown"
+                               MouseEnter="ImageCustomer_MouseEnter" 
+                               MouseLeave="ImageCustomer_MouseLeave" Stretch="UniformToFill" Height="130" Width="150"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </StackPanel>
+        <Border 
+            Grid.Row="2"
+            BorderThickness="1" 
+            BorderBrush="{DynamicResource  BorderBrushColor}" 
+            Background="{DynamicResource PanelTitleBackground}" 
+            CornerRadius="10" 
+            Margin="5,5,5,5">
+            <StackPanel Margin="20">
+                <Label  
+                    Style="{DynamicResource ThemedLabel}"
+                    Content="Username:"
+                    Margin="0,0,0,0"/>
+                <TextBox 
+                    Style="{DynamicResource ThemedTextBox}"
+                    Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Label
+                    Style="{DynamicResource ThemedLabel}"
+                    Content="Password:"
+                    Margin="0,0,0,0"/>
+                <PasswordBox 
+                    Style="{DynamicResource ThemedPasswordBox}"
+                    x:Name="PasswordBox"
+                    PasswordChanged="PasswordBox_PasswordChanged"/>
+
+                <TextBlock                 
+                    Text="{Binding ErrorMessage}" 
+                    Foreground="Red"/>
+
+                <Button 
+                    Style="{DynamicResource ThemedButton}"
+                    Content="{Binding IsSignedIn, Converter={StaticResource BooleanToSignInTextConverter}}" 
+                    Command="{Binding SignInCommand}" 
+                    Margin="0,0,0,0"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

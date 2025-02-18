@@ -1,0 +1,354 @@
+﻿<Window x:Class="Ncs.WpfApp.Views.AdminWindow" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Customer Page" 
+        Height="600" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        WindowStyle="None"
+        Background="{DynamicResource PrimaryBackground}">
+
+    <Grid>
+        <!-- Define Row Definitions for Header, Content, and Footer -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15*"/>
+            <!-- Header -->
+            <RowDefinition Height="80*"/>
+            <!-- Content -->
+            <RowDefinition Height="5*"/>
+            <!-- Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- ================== HEADER SECTION ================== -->
+        <Grid Grid.Row="0" Background="{DynamicResource PanelTitleBackground}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="30*"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0">
+                <StackPanel>
+                    <Label 
+                        Content="WELCOME..." 
+                        Style="{DynamicResource ThemedLabel}"
+                        FontSize="16"
+                        FontWeight="Bold"></Label>
+                    <Label 
+                        Name="lblCustomerInfo" 
+                        Content="EMP_NO / EMP_NAME / COMPANY" Style="{DynamicResource ThemedLabel}"
+                        Margin="20,0,0,0" VerticalAlignment="Top"></Label>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1">
+                <StackPanel>
+                    <Grid/>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="2">
+
+            </Border>
+
+        </Grid>
+
+
+        <!-- ================== CONTENT SECTION ================== -->
+        <Grid Grid.Row="1">
+            <TabControl Style="{DynamicResource ThemedTabControl}">
+                <!-- Orders Tab -->
+                <TabItem Header="Orders" Style="{DynamicResource ThemedTabItem}">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Search Bar -->
+                            <RowDefinition Height="*"/>
+                            <!-- DataGrid -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Pagination -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Search & Refresh Bar -->
+                        <StackPanel Grid.Row="0" Margin="0 0 0 10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <TextBox Width="200" 
+                                            Height="30" 
+                                            Name="SearchTextBoxOrders" 
+                                            Margin="10"
+                                            Style="{DynamicResource ThemedTextBox}"
+                                            FontWeight="Regular"
+                                            Text="{Binding SearchTextOrders, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Button 
+                                        Content="Search" 
+                                        Width="100" 
+                                        Height="30"
+                                        Style="{DynamicResource ThemedButton}" 
+                                        Command="{Binding SearchCommandOrders}"
+                                        Margin="10,0,0,0"/>
+                                    <Button 
+                                        Content="Refresh" 
+                                        Width="100" 
+                                        Height="30"
+                                        Style="{DynamicResource ThemedButton}"
+                                        Command="{Binding RefreshCommandOrders}"
+                                        Margin="10,0,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="0,0,15,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50*"/>
+                                            <ColumnDefinition Width="5"/>
+                                            <ColumnDefinition Width="50*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" 
+                                                BorderThickness="1" 
+                                                BorderBrush="{DynamicResource  BorderBrushColor}" 
+                                                Background="{DynamicResource PanelTitleBackground}" 
+                                                CornerRadius="10">
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="{Binding Menu1Name}" 
+                                                       Style="{DynamicResource ThemedLabel}" 
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,0,0"/>
+                                                <Label Content="{Binding Menu1Available}" 
+                                                       Style="{DynamicResource ThemedLabel}"
+                                                       FontSize="20"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Grid.Column="2" 
+                                                BorderThickness="1" 
+                                                BorderBrush="{DynamicResource  BorderBrushColor}" 
+                                                Background="{DynamicResource PanelTitleBackground}" 
+                                                CornerRadius="10">
+                                            <StackPanel Orientation="Vertical">
+                                                <Label Content="{Binding Menu2Name}" 
+                                                       Style="{DynamicResource ThemedLabel}" 
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,0,0"/>
+                                                <Label Content="{Binding Menu2Available}" 
+                                                       Style="{DynamicResource ThemedLabel}"
+                                                       FontSize="20"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                        <!-- Orders DataGrid -->
+                        <DataGrid Grid.Row="1" 
+                                  Name="OrdersDataGrid" 
+                                  ItemsSource="{Binding Orders}" 
+                                  Style="{StaticResource ThemedDataGrid}"
+                                  ColumnHeaderStyle="{StaticResource ThemedDataGridColumnHeader}" 
+                                  AutoGenerateColumns="False" 
+                                  Margin="10"
+                                  MouseLeftButtonDown="OrdersDataGrid_MouseLeftButtonDown">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Orders ID" Binding="{Binding OrdersId}" Width="Auto" />
+                                <DataGridTextColumn Header="User Id" Binding="{Binding OrdersUserId}" Width="Auto" />
+                                <DataGridTextColumn Header="Order Type" Binding="{Binding OrderType}" Width="Auto" />
+                                <DataGridTextColumn Header="Order Date" Binding="{Binding OrderDate}" Width="Auto" />
+                                <DataGridTextColumn Header="Reservation Date" Binding="{Binding ReservationDate}" Width="Auto" />
+                                <DataGridTextColumn Header="Name" Binding="{Binding OrdersUserName}" Width="Auto" />
+                                <DataGridTextColumn Header="Company" Binding="{Binding OrdersUserCompany}" Width="Auto" />
+                                <DataGridTextColumn Header="Guest Name" Binding="{Binding OrdersUserGuestName}" Width="Auto" />
+                                <DataGridTextColumn Header="Guest Company" Binding="{Binding OrdersUserGuestCompany}" Width="Auto" />
+                                <DataGridTextColumn Header="Menu Name" Binding="{Binding MenuItemsName}" Width="Auto" />
+                                <DataGridTextColumn Header="Variant" Binding="{Binding MenuVariant}" Width="Auto" />
+
+                                <DataGridTemplateColumn Header="Status" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Foreground="Blue" TextDecorations="Underline" Cursor="Hand">
+                                            <Hyperlink Command="{Binding DataContext.StatusActionCommandOrders, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                       CommandParameter="{Binding OrderParameter}">
+                                                <TextBlock Text="{Binding OrderStatus}"/>
+                                            </Hyperlink>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+
+                            </DataGrid.Columns>                        
+                        </DataGrid>
+
+                        <!-- Pagination Controls -->
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                            <Button Style="{DynamicResource ThemedButton}" Content="First" Width="70" Command="{Binding FirstPageCommandOrders}"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Previous" Width="90" Command="{Binding PreviousPageCommandOrders}"/>
+                            <Label Style="{DynamicResource ThemedLabel}" Content="{Binding CurrentPageOrders}" VerticalAlignment="Center" Margin="10"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Next" Width="70" Command="{Binding NextPageCommandOrders}"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Last" Width="70" Command="{Binding LastPageCommandOrders}"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+                <!-- Reservation Tab -->
+                <TabItem Header="Reservation" Style="{DynamicResource ThemedTabItem}">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Search Bar -->
+                            <RowDefinition Height="*"/>
+                            <!-- DataGrid -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Pagination -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Search & Refresh Bar -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 10">
+                            <TextBox Width="200" 
+                                    Height="30" 
+                                    Name="SearchTextBoxReservations" 
+                                    Margin="10"
+                                    Style="{DynamicResource ThemedTextBox}"
+                                    FontWeight="Regular"
+                                    Text="{Binding SearchTextReservations, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Button 
+                                Content="Search" 
+                                Width="100" 
+                                Height="30"
+                                Style="{DynamicResource ThemedButton}" 
+                                Command="{Binding SearchCommandReservations}"
+                                Margin="10,0,0,0"/>
+                            <Button 
+                                Content="Refresh" 
+                                Width="100" 
+                                Height="30"
+                                Style="{DynamicResource ThemedButton}"
+                                Command="{Binding RefreshCommandReservations}"
+                                Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <!-- Reservations DataGrid -->
+                        <DataGrid Grid.Row="1" 
+                                  Name="ReservationsDataGrid" 
+                                  ItemsSource="{Binding Reservations}" 
+                                  Style="{StaticResource ThemedDataGrid}"
+                                  ColumnHeaderStyle="{StaticResource ThemedDataGridColumnHeader}" 
+                                  AutoGenerateColumns="False" 
+                                  Margin="10">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Reservations ID" Binding="{Binding ReservationsId}" Width="Auto" />
+                                <DataGridTextColumn Header="Customer Name" Binding="{Binding ReservationsCustomerName}" Width="*" />
+                                <DataGridTextColumn Header="Reservations Date" Binding="{Binding ReservationsDate}" Width="Auto" />
+                                <DataGridTextColumn Header="Total Amount" Binding="{Binding TotalAmountReservations, StringFormat=C}" Width="Auto" />
+                                <DataGridTextColumn Header="Status" Binding="{Binding StatusReservations}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- Pagination Controls -->
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                            <Button Style="{DynamicResource ThemedButton}" Content="First" Width="70" Command="{Binding FirstPageCommandReservations}"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Previous" Width="90" Command="{Binding PreviousPageCommandReservations}"/>
+                            <Label Style="{DynamicResource ThemedLabel}" Content="{Binding CurrentPageReservations}" VerticalAlignment="Center" Margin="10"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Next" Width="70" Command="{Binding NextPageCommandReservations}"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Last" Width="70" Command="{Binding LastPageCommandReservations}"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+                <!-- Users Tab -->
+                <TabItem Header="Users" Style="{DynamicResource ThemedTabItem}">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Search Bar -->
+                            <RowDefinition Height="*"/>
+                            <!-- DataGrid -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Pagination -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Search & Refresh Bar -->
+                        <StackPanel Grid.Row="0" Margin="0 0 0 10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <TextBox Width="200" 
+                                        Height="30" 
+                                        Name="SearchTextBoxUsers" 
+                                        Margin="10"
+                                        Style="{DynamicResource ThemedTextBox}"
+                                        FontWeight="Regular"
+                                        Text="{Binding SearchTextUsers, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Button 
+                                        Content="Search" 
+                                        Width="100" 
+                                        Height="30"
+                                        Style="{DynamicResource ThemedButton}" 
+                                        Command="{Binding SearchCommandUsers}"
+                                        Margin="10,0,0,0"/>
+                                    <Button 
+                                        Content="Refresh" 
+                                        Width="100" 
+                                        Height="30"
+                                        Style="{DynamicResource ThemedButton}"
+                                        Command="{Binding RefreshCommandUsers}"
+                                        Margin="10,0,0,0"/>
+                                </StackPanel>
+                                <Button Grid.Column="1"
+                                        Content="Add" 
+                                        Width="100" 
+                                        Height="30"
+                                        Style="{DynamicResource ThemedButton}"
+                                        Command="{Binding AddCommandUsers}"
+                                        HorizontalAlignment="Right"
+                                Margin="0,0,10,0"/>
+                            </Grid>
+                        </StackPanel>
+                        <!-- Users DataGrid -->
+                        <DataGrid Grid.Row="1" 
+                                  Name="UsersDataGrid" 
+                                  ItemsSource="{Binding Users}" 
+                                  Style="{StaticResource ThemedDataGrid}"
+                                  ColumnHeaderStyle="{StaticResource ThemedDataGridColumnHeader}" 
+                                  AutoGenerateColumns="False" 
+                                  Margin="10">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Users ID" Binding="{Binding UsersId}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Users Name" Binding="{Binding UsersName}" Width="*" />
+                                <DataGridTextColumn Header="RFID Tag" Binding="{Binding UsersRfidTag}" Width="Auto" />
+                                <DataGridTextColumn Header="Email" Binding="{Binding UsersEmail}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="Phone Number" Binding="{Binding UsersPhoneNumber}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="ID Type" Binding="{Binding UsersIdType}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="ID Type/Employee Number" Binding="{Binding UsersIdNumber}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Company" Binding="{Binding UsersCompany}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="User Role" Binding="{Binding UsersRole}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding UsersStatus}" Width="*" FontWeight="Regular"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- Pagination Controls -->
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                            <Button Style="{DynamicResource ThemedButton}" Content="First" Width="70" Command="{Binding FirstPageCommandUsers}"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Previous" Width="90" Command="{Binding PreviousPageCommandUsers}"/>
+                            <Label Style="{DynamicResource ThemedLabel}" Content="{Binding CurrentPageUsers}" VerticalAlignment="Center" Margin="10"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Next" Width="70" Command="{Binding NextPageCommandUsers}"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Last" Width="70" Command="{Binding LastPageCommandUsers}"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+
+        <!-- ================== FOOTER SECTION (Real-time Date & Time) ================== -->
+        <Grid Grid.Row="2" Background="{DynamicResource PanelTitleBackground}">
+            <TextBlock x:Name="DateTimeText" FontSize="16" Foreground="{DynamicResource PrimaryText}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+        </Grid>
+    </Grid>
+</Window>
