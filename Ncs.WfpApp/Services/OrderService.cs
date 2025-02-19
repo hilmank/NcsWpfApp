@@ -13,29 +13,26 @@ namespace Ncs.WpfApp.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly HttpClient _httpClient;
         private readonly IMapper _mapper;
-        public OrderService(HttpClient httpClient, IMapper mapper)
+        public OrderService(IMapper mapper)
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _mapper = mapper;
         }
 
 
         public async Task<ApiResponseModel<OrderModel>> GetOrderAsync(string searchText)
         {
-            if (string.IsNullOrEmpty(SessionManager.Token))
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
             {
                 return new ApiResponseModel<OrderModel>
                 {
                     Success = false,
-                    Message = $"Token is required to fetch data",
-                    MessageDetail = $"Token is required to fetch data."
+                    Message = "Token is required.",
+                    MessageDetail = "User must be signed in to access this resource."
                 };
             }
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SessionManager.Token);
-            var response = await _httpClient.GetAsync("/api/orders/menu/daily");
+            var response = await HttpClientHelper.GetAsync("/api/orders/menu/daily");
+
             var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
             if (message != "Success")
             {
@@ -47,7 +44,7 @@ namespace Ncs.WpfApp.Services
                 };
             }
 
-            response = await _httpClient.GetAsync("/api/orders/date");
+            response = await HttpClientHelper.GetAsync("/api/orders/date");
             (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
             if (message != "Success")
             {
@@ -103,7 +100,7 @@ namespace Ncs.WpfApp.Services
                 };
             }
 
-            retval.Orders = apiResponse.Data?.ToList() ?? new List<OrdersDto>();
+            retval.Orders = apiResponse.Data?.OrderByDescending(x=>x.CreatedAt).ToList() ?? new List<OrdersDto>();
             if (string.IsNullOrEmpty(searchText))
             {
                 return new ApiResponseModel<OrderModel>
@@ -137,22 +134,18 @@ namespace Ncs.WpfApp.Services
         }
         public async Task<ApiResponseModel<bool>> SaveStatusActionAsync(string action, int orderId)
         {
-            if (string.IsNullOrEmpty(SessionManager.Token))
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
             {
                 return new ApiResponseModel<bool>
                 {
                     Success = false,
-                    Message = $"Token is required to update data",
-                    MessageDetail = $"Token is required to update data."
+                    Message = "Token is required.",
+                    MessageDetail = "User must be signed in to access this resource."
                 };
             }
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SessionManager.Token);
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+            string apiUrl = $"/api/orders/{action.ToLower()}/{orderId}";
 
-
-            var emptyContent = new StringContent("", Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PutAsync($"/api/orders/{action.ToLower()}/{orderId}", emptyContent);
+            var response = await HttpClientHelper.PutAsync(apiUrl, new { });
             var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
             if (message != "Success")
             {
@@ -165,7 +158,80 @@ namespace Ncs.WpfApp.Services
             }
             var responseContent = await response.Content.ReadAsStringAsync();
             var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<bool>>(responseContent);
-            return apiResponse;
+            return apiResponse ?? new ApiResponseModel<bool>
+            {
+                Success = false,
+                Message = "Unknown error",
+                MessageDetail = "Unknown error"
+            };
+        }
+        public async Task<ApiResponseModel<IEnumerable<MenuSchedulesDto>>> GetTodayMenus()
+        {
+
+            var response = await HttpClientHelper.GetAsync("/api/orders/menu/daily");
+            var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
+            if (message != "Success")
+            {
+                return new ApiResponseModel<IEnumerable<MenuSchedulesDto>>
+                {
+                    Success = false,
+                    Message = message,
+                    MessageDetail = messageDetail
+                };
+            }
+            var responseMenuContent = await response.Content.ReadAsStringAsync();
+
+            var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<IEnumerable<MenuSchedulesDto>>>(responseMenuContent);
+
+            if (apiResponse?.Data == null || apiResponse.Data.ToList().Count < 2)
+            {
+                return new ApiResponseModel<IEnumerable<MenuSchedulesDto>>
+                {
+                    Success = false,
+                    Message = "Invalid data received",
+                    MessageDetail = "Invalid data received"
+                };
+            }
+            return apiResponse ?? new ApiResponseModel<IEnumerable<MenuSchedulesDto>>
+            {
+                Success = false,
+                Message = "Unknown error",
+                MessageDetail = "Unknown error"
+            };
+        }
+        public async Task<ApiResponseModel<bool>> SaveOrderCustomerActionAsync(OrderAddModel orderItem)
+        {
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
+            {
+                return new ApiResponseModel<bool>
+                {
+                    Success = false,
+                    Message = "Token is required.",
+                    MessageDetail = "User must be signed in to access this resource."
+                };
+            }
+
+            var response = await HttpClientHelper.PostAsync("/api/orders", orderItem);
+            var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
+            if (message != "Success")
+            {
+                return new ApiResponseModel<bool>
+                {
+                    Success = false,
+                    Message = message,
+                    MessageDetail = messageDetail
+                };
+            }
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<bool>>(responseContent);
+
+            
+            return apiResponse ?? new ApiResponseModel<bool>
+            {
+                Success = false,
+                Message = "Unknown error",
+                MessageDetail = "Unknown error"
+            };
         }
     }
 }

@@ -38,6 +38,13 @@ namespace Ncs.WpfApp.Helpers
                 .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(src => src.OrderStatus))
                 .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.ReservationDate, opt => opt.MapFrom(src => src.Reservation != null ? src.Reservation.ReservedDate : "N/A"));
+            CreateMap<MenuSchedulesDto, DailyMenuModel>()
+                .ForMember(dest => dest.MenuId, opt => opt.MapFrom(src => src.MenuItem.Id))
+                .ForMember(dest => dest.MenuName, opt => opt.MapFrom(src => src.MenuItem.Name))
+                .ForMember(dest => dest.MenuDescription, opt => opt.MapFrom(src => src.MenuItem.Description))
+                .ForMember(dest => dest.MenuCalories, opt => opt.MapFrom(src => $"{src.MenuItem.Calories} cals"))
+                .ForMember(dest => dest.MenuStock, opt => opt.MapFrom(src => src.AvailableQuantity.ToString()))
+                .ForMember(dest => dest.MenuImage, opt => opt.MapFrom(src => src.MenuItem.ImageUrl));
 
         }
     }

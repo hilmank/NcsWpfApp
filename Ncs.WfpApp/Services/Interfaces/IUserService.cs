@@ -6,6 +6,7 @@ namespace Ncs.WpfApp.Services.Interfaces
     public interface IUserService
     {
         Task<ApiResponseModel<UserSignInResponseModel>> SignInAsync(UserSignInModel user);
+        Task<ApiResponseModel<UserSignInResponseModel>> RfidSignInAsync(string rfidTag);
         Task<ApiResponseModel<IEnumerable<UsersDto>>> GetUsersAsync(string searchText);
         Task<ApiResponseModel<IEnumerable<CompaniesDto>>>  GetCompaniesAsync();
         Task<ApiResponseModel<IEnumerable<PersonalIdTypeDto>>> GetPersonalIdTypesAsync();

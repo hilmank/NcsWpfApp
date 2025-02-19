@@ -11,13 +11,13 @@ using System.Windows.Input;
 
 namespace Ncs.WpfApp.ViewModels
 {
-    public class AdminWindowViewModel : INotifyPropertyChanged
+    public class AdminViewModel : INotifyPropertyChanged
     {
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly IOrderService _orderService;
 
-        public AdminWindowViewModel(
+        public AdminViewModel(
             IOrderService orderService,
             IReservationService reservationService,
             IUserService userService,
@@ -29,7 +29,7 @@ namespace Ncs.WpfApp.ViewModels
             Orders = new ObservableCollection<OrderListModel>();
             SearchCommandOrders = new RelayCommand(async () => await LoadDataOrdersAsync(SearchTextOrders), () => true);
             RefreshCommandOrders = new RelayCommand(async () => await RefreshDataOrdersAsync(), () => true);
-            StatusActionCommandOrders = new RelayCommand<object>(async param => await StatusActionAsync(param), param => param != null);
+            StatusActionCommandOrders = new RelayCommand<object>(async param => StatusAction(param), param => param != null);
 
             #endregion
 
@@ -120,10 +120,11 @@ namespace Ncs.WpfApp.ViewModels
             }
         }
         private async Task RefreshDataOrdersAsync() => await LoadDataOrdersAsync();
-        private async Task StatusActionAsync(object parameter)
+        private void StatusAction(object parameter)
         {
-            if (parameter is OrderStatusParameter orderParam)
+            if (parameter is OrderParameters orderParam)
             {
+
                 var viewModel = new OrdersConfirmationViewModel(_orderService);
                 viewModel.Initialize(orderParam.OrderId, orderParam.OrderStatus);
 

@@ -5,28 +5,37 @@ using Ncs.WpfApp.Models.ApiResponse;
 using Ncs.WpfApp.Services.Interfaces;
 using Newtonsoft.Json;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace Ncs.WpfApp.Services
 {
     public class UserService : IUserService
     {
-        private readonly HttpClient _httpClient;
         private readonly IMapper _mapper;
-        public UserService(HttpClient httpClient, IMapper mapper)
+        public UserService(IMapper mapper)
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _mapper = mapper;
         }
 
         public async Task<ApiResponseModel<UserSignInResponseModel>> SignInAsync(UserSignInModel user)
         {
-            var requestBody = new { UsernameOrEmail = user.Username, Password = user.Password };
+            var requestBody = new { UsernameOrEmail = user.UsernameOrEmail, Password = user.Password };
             var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/api/auth/login", content);
+//            var response = await _httpClient.PostAsync("/api/auth/login", content);
+            var response = await HttpClientHelper.PostAsync("/api/auth/login", user);
+
+            var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
+            if (message != "Success")
+            {
+                return new ApiResponseModel<UserSignInResponseModel>
+                {
+                    Success = false,
+                    Message = message,
+                    MessageDetail = messageDetail
+                };
+            }
+
             // Read response content as string
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -43,23 +52,55 @@ namespace Ncs.WpfApp.Services
                     MessageDetail= "Failed to deserialize API response."
                 };
             }
-
+            SessionManager.SetAdminToken(apiResponse.Data.Token, apiResponse.Data.Token);
             return apiResponse;
         }
+        public async Task<ApiResponseModel<UserSignInResponseModel>> RfidSignInAsync(string rfidTag)
+        {
+            var requestBody = new { RfidTagId = rfidTag };
+            var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+
+            //var response = await _httpClient.PostAsync("/api/auth/rfid-login", content);
+            var response = await HttpClientHelper.PostAsync("/api/auth/rfid-login", content);
+            var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
+            if (message != "Success")
+            {
+                return new ApiResponseModel<UserSignInResponseModel>
+                {
+                    Success = false,
+                    Message = message,
+                    MessageDetail = messageDetail
+                };
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<UserSignInResponseModel>>(responseContent);
+            if (apiResponse == null)
+            {
+                return new ApiResponseModel<UserSignInResponseModel>()
+                {
+                    Success = false,
+                    Message = "Failed to deserialize API response.",
+                    MessageDetail = "Failed to deserialize API response."
+                };
+            }
+            SessionManager.SetCustomerToken(apiResponse.Data.Token, apiResponse.Data.Token);
+            return apiResponse;
+        }
+
         public async Task<ApiResponseModel<IEnumerable<UsersDto>>> GetUsersAsync(string searchText)
         {
-            if (string.IsNullOrEmpty(SessionManager.Token))
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
             {
                 return new ApiResponseModel<IEnumerable<UsersDto>>
                 {
                     Success = false,
-                    Message = $"Token is required to fetch user information.",
-                    MessageDetail = $"Token is required to fetch user information."
+                    Message = "Token is required to fetch user information.",
+                    MessageDetail = "User must be signed in to access this resource."
                 };
             }
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SessionManager.Token);
-            var response = await _httpClient.GetAsync("/api/users");
 
+            var response = await HttpClientHelper.GetAsync("/api/users");
             var responseContent = await response.Content.ReadAsStringAsync();
 
             var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<IEnumerable<UsersDto>>>(responseContent);
@@ -108,17 +149,17 @@ namespace Ncs.WpfApp.Services
         }
         public async Task<ApiResponseModel<IEnumerable<CompaniesDto>>> GetCompaniesAsync()
         {
-            if (string.IsNullOrEmpty(SessionManager.Token))
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
             {
                 return new ApiResponseModel<IEnumerable<CompaniesDto>>
                 {
                     Success = false,
-                    Message = $"Token is required to fetch data information.",
-                    MessageDetail = $"Token is required to fetch data information."
+                    Message = "Token is required.",
+                    MessageDetail = "User must be signed in to access this resource."
                 };
             }
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SessionManager.Token);
-            var response = await _httpClient.GetAsync("/api/masters/companies");
+
+            var response = await HttpClientHelper.GetAsync("/api/masters/companies");
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -137,17 +178,17 @@ namespace Ncs.WpfApp.Services
         }
         public async Task<ApiResponseModel<IEnumerable<PersonalIdTypeDto>>> GetPersonalIdTypesAsync()
         {
-            if (string.IsNullOrEmpty(SessionManager.Token))
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
             {
                 return new ApiResponseModel<IEnumerable<PersonalIdTypeDto>>
                 {
                     Success = false,
-                    Message = $"Token is required to fetch data information.",
-                    MessageDetail = $"Token is required to fetch data information."
+                    Message = "Token is required.",
+                    MessageDetail = "User must be signed in to access this resource."
                 };
             }
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SessionManager.Token);
-            var response = await _httpClient.GetAsync("/api/masters/personal-types");
+
+            var response = await HttpClientHelper.GetAsync("/api/masters/personal-types");
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -166,18 +207,17 @@ namespace Ncs.WpfApp.Services
         }
         public async Task<ApiResponseModel<IEnumerable<RolesDto>>> GetRolesAsync()
         {
-            if (string.IsNullOrEmpty(SessionManager.Token))
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
             {
                 return new ApiResponseModel<IEnumerable<RolesDto>>
                 {
                     Success = false,
-                    Message = $"Token is required to fetch data information.",
-                    MessageDetail = $"Token is required to fetch data information."
+                    Message = "Token is required.",
+                    MessageDetail = "User must be signed in to access this resource."
                 };
             }
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SessionManager.Token);
-            var response = await _httpClient.GetAsync("/api/masters/roles");
 
+            var response = await HttpClientHelper.GetAsync("/api/masters/roles");
             var responseContent = await response.Content.ReadAsStringAsync();
 
             var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<IEnumerable<RolesDto>>>(responseContent);
@@ -195,23 +235,28 @@ namespace Ncs.WpfApp.Services
         }
 
         public async Task<ApiResponseModel<bool>> SaveUserAsync(UserAddModel user)
-
         {
-            if (string.IsNullOrEmpty(SessionManager.Token))
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
             {
                 return new ApiResponseModel<bool>
                 {
                     Success = false,
-                    Message = $"Token is required to fetch data information.",
-                    MessageDetail = $"Token is required to fetch data information."
+                    Message = "Token is required.",
+                    MessageDetail = "User must be signed in to access this resource."
                 };
             }
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SessionManager.Token);
 
-            var jsonContent = JsonConvert.SerializeObject(user);
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync("/api/users", content);
+            var response = await HttpClientHelper.PostAsync("/api/users", user);
+            var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
+            if (message != "Success")
+            {
+                return new ApiResponseModel<bool>
+                {
+                    Success = false,
+                    Message = message,
+                    MessageDetail = messageDetail
+                };
+            }
             var responseContent = await response.Content.ReadAsStringAsync();
             var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<bool>>(responseContent);
 
@@ -237,6 +282,5 @@ namespace Ncs.WpfApp.Services
 
             return apiResponse;
         }
-
     }
 }

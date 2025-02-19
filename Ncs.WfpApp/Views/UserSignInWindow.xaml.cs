@@ -82,7 +82,9 @@ namespace Ncs.WpfApp.Views
         }
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            
+            var adminWindow = new CustomerWindow();
+            adminWindow.Show();
+
         }
         private void ImageCustomer_Click(object sender, MouseButtonEventArgs e)
         {

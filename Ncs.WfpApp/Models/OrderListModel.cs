@@ -16,7 +16,7 @@
             public required string OrderDate { get; set; }
             public required string ReservationDate { get; set; }
 
-        public OrderStatusParameter OrderParameter => new OrderStatusParameter
+        public OrderParameters OrderParameter => new OrderParameters
         {
             OrderStatus = OrderStatus,
             OrderId = OrdersId

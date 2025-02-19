@@ -72,7 +72,7 @@ namespace Ncs.WpfApp.ViewModels
 
         private async Task SignInAsync()
         {
-            var user = new UserSignInModel { Username = Username, Password = Password };
+            var user = new UserSignInModel { UsernameOrEmail = Username, Password = Password };
             var result = await _userService.SignInAsync(user);
             bool isAuthenticated = result.Success;
             ErrorMessage = string.Empty;
@@ -80,7 +80,6 @@ namespace Ncs.WpfApp.ViewModels
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    SessionManager.SetToken(token: result.Data.Token);
                     var adminWindow = new AdminWindow();
                     adminWindow.Show();
                     foreach (Window window in Application.Current.Windows)
@@ -94,6 +93,7 @@ namespace Ncs.WpfApp.ViewModels
                                     CloseAllWindowsExcept(userSignInWindow);
                                     viewModel.IsSignedIn = false; // ✅ Reset sign-in status
                                     viewModel.ClearInputs();  // ✅ Clear all input fields
+                                    SessionManager.ClearAdminSession();
                                 }
                                 else
                                 {

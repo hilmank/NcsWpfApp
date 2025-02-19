@@ -3,6 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Customer Page" 
         Height="600" Width="1000"
+        ResizeMode="NoResize"
+        WindowState="Maximized"
         Background="{DynamicResource PrimaryBackground}">
 
     <Grid>
@@ -32,30 +34,26 @@
                         FontWeight="Bold"></Label>
                     <Label 
                         Name="lblCustomerInfo" 
-                        Content="EMP_NO / EMP_NAME / COMPANY" Style="{DynamicResource ThemedLabel}"
+                        Content="{Binding CustomerInfo}" Style="{DynamicResource ThemedLabel}"
                         Margin="20,0,0,0" VerticalAlignment="Top"></Label>
                 </StackPanel>
             </Border>
             <Border Grid.Column="1">
                 <StackPanel>
                     <Grid>
-                        <TextBox Name="txtRfid" 
-                                 Margin="0,5,0,5"
-                                 Height="30" 
-                                 Width="250" 
-                                 Background="{DynamicResource TextBoxBackground}" 
-                                 Foreground="{DynamicResource PrimaryText}" />
+                        <TextBox x:Name="txtRfidInput"
+                             Text="{Binding RfidInput, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ThemedTextBox}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding RfidEnterCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
                     </Grid>
-                    <Button x:Name="btnCancel" 
+                    <Button 
+                        x:Name="btnCancel" 
                         Content="CANCEL" 
-                        HorizontalAlignment="Center" 
-                        Width="100" 
-                        Height="35" 
-                        Background="{DynamicResource ButtonBackground}"
-                        Foreground="{DynamicResource ButtonForeground}" 
-                        FontWeight="Bold" 
-                        BorderThickness="0"
-                        Margin="0,5,0,5" />
+                        Style="{StaticResource ThemedButton}"
+                        Command="{Binding CancelCommand}"/>
                 </StackPanel>
             </Border>
             <Border Grid.Column="2">
@@ -87,7 +85,10 @@
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition Width="50*" />
                     </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
+                    <Grid Grid.Column="0" Cursor="Hand">
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding SelectMenuCommand}" CommandParameter="{Binding MenuId1}"/>
+                        </Grid.InputBindings>
                         <Border BorderThickness="1" 
                                 BorderBrush="{DynamicResource  BorderBrushColor}" 
                                 Background="{DynamicResource PanelTitleBackground}" 
@@ -103,7 +104,7 @@
 
                                 <Label Grid.Row="0" 
                                        Name="lblMenuName1" 
-                                       Content="Menu 1" 
+                                       Content="{Binding MenuName1}" 
                                        Style="{DynamicResource ThemedLabel}"
                                        FontSize="18"
                                        FontWeight="Bold"
@@ -112,7 +113,7 @@
 
                                 <Image Grid.Row="1"
                                        Name="imgMenu1"
-                                       Source="/Assets/image_1.png" 
+                                       Source="{Binding MenuImage1}" 
                                        Stretch="UniformToFill"/>
 
                                 <StackPanel Grid.Row="2">
@@ -124,14 +125,14 @@
 
                                         <Label Grid.Column="0" 
                                                Name="lblMenuDescription1" 
-                                               Content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." 
+                                               Content="{Binding MenuDescription1}" 
                                                Style="{DynamicResource ThemedLongTextLabel}"
                                                HorizontalAlignment="Left"
                                                MaxWidth="400"/>
 
                                         <Label Grid.Column="1"
                                                Name="lblMenuCalories1"
-                                               Content="345 Cals"
+                                               Content="{Binding MenuCalories1}"
                                                Style="{DynamicResource ThemedLabel}"
                                                HorizontalAlignment="Right"
                                                VerticalAlignment="Top"
@@ -157,7 +158,7 @@
 
                                         <Label Grid.Row="1"
                                                Name="lblNumberStock"
-                                               Content="123 PAX"
+                                               Content="{Binding MenuStock1}"
                                                Style="{DynamicResource ThemedLabel}"
                                                VerticalAlignment="Top"
                                                HorizontalAlignment="Center"
@@ -168,7 +169,11 @@
                             </Grid>
                         </Border>
                     </Grid>
-                    <Grid Grid.Column="2">
+                    <Grid Grid.Column="2" Cursor="Hand">
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding SelectMenuCommand}" CommandParameter="{Binding MenuId2}"/>
+                        </Grid.InputBindings>
+
                         <Border BorderThickness="1" 
                                 BorderBrush="{DynamicResource  BorderBrushColor}" 
                                 Background="{DynamicResource PanelTitleBackground}" 
@@ -184,7 +189,7 @@
 
                                 <Label Grid.Row="0" 
                                        Name="lblMenuName2" 
-                                       Content="Menu 2" 
+                                       Content="{Binding MenuName2}" 
                                        Style="{DynamicResource ThemedLabel}"
                                        FontSize="18"
                                        FontWeight="Bold"
@@ -193,7 +198,7 @@
 
                                 <Image Grid.Row="1"
                                        Name="imgMenu2"
-                                       Source="/Assets/image_2.png" 
+                                       Source="{Binding MenuImage2}" 
                                        Stretch="UniformToFill"/>
 
                                 <StackPanel Grid.Row="2">
@@ -205,14 +210,14 @@
 
                                         <Label Grid.Column="0" 
                                                Name="lblMenuDescription2" 
-                                               Content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." 
+                                               Content="{Binding MenuDescription2}" 
                                                Style="{DynamicResource ThemedLongTextLabel}"
                                                HorizontalAlignment="Left"
                                                MaxWidth="400"/>
 
                                         <Label Grid.Column="1"
                                                Name="lblMenuCalories2"
-                                               Content="345 Cals"
+                                               Content="{Binding MenuCalories2}"
                                                Style="{DynamicResource ThemedLabel}"
                                                HorizontalAlignment="Right"
                                                VerticalAlignment="Top"
@@ -238,7 +243,7 @@
 
                                         <Label Grid.Row="1"
                                                Name="lblNumberStock2"
-                                               Content="123 PAX"
+                                               Content="{Binding MenuStock2}"
                                                Style="{DynamicResource ThemedLabel}"
                                                VerticalAlignment="Top"
                                                HorizontalAlignment="Center"

@@ -19,7 +19,7 @@ namespace Ncs.WpfApp.Views
         public AdminWindow()
         {
             InitializeComponent();
-            DataContext = App.ServiceProvider.GetService<AdminWindowViewModel>();
+            DataContext = App.ServiceProvider.GetService<AdminViewModel>();
 
             Loaded += AdminWindow_Loaded;
             StartClock();
@@ -58,7 +58,7 @@ namespace Ncs.WpfApp.Views
 
         private async Task ReloadDataAsync()
         {
-            if (DataContext is AdminWindowViewModel viewModel)
+            if (DataContext is AdminViewModel viewModel)
             {
                 if (viewModel.SearchCommandUsers.CanExecute(null))
                 {

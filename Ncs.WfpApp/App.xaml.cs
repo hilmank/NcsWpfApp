@@ -7,7 +7,7 @@ using Ncs.WpfApp.ViewModels;
 using Ncs.WpfApp.Views;
 using System.Net.Http;
 using System.Windows;
-
+using WpfScreenHelper;
 namespace Ncs.WpfApp
 {
     /// <summary>
@@ -46,16 +46,19 @@ namespace Ncs.WpfApp
 
             // Register ViewModels
             services.AddSingleton<UserSignInViewModel>();
-            services.AddSingleton<AdminWindowViewModel>();
+            services.AddSingleton<AdminViewModel>();
             services.AddTransient<UserAddViewModel>();
             services.AddTransient<OrdersConfirmationViewModel>();
+            services.AddTransient<CustomerViewModel>();
+            services.AddTransient<CustomerMenuConfirmationViewModel>();
 
             // Register Views
             services.AddSingleton<UserSignInWindow>();
             services.AddSingleton<AdminWindow>();
             services.AddSingleton<OrdersConfirmationWindow>();
-            services.AddSingleton<CustomerWindow>();
             services.AddSingleton<UserAddWindow>();
+            services.AddSingleton<CustomerWindow>();
+            services.AddSingleton<CustomerMenuConfirmationWindow>();
 
 
             // Build Service Provider
@@ -64,7 +67,39 @@ namespace Ncs.WpfApp
             // Start Main Window
             var mainWindow = ServiceProvider.GetService<UserSignInWindow>();
             mainWindow?.Show();
+
+            /*
+            base.OnStartup(e);
+
+            // Get all screens
+            var screens = Screen.AllScreens.ToList();
+            AdminWindow adminWindow = new AdminWindow();
+            if (screens.Count > 0)
+            {
+                var screen1 = screens[0];
+                adminWindow.Left = screen1.Bounds.Left;
+                adminWindow.Top = screen1.Bounds.Top;
+                adminWindow.Width = screen1.Bounds.Width;
+                adminWindow.Height = screen1.Bounds.Height;
+            }
+            adminWindow.Show();
+
+            // Create and show Customer Window on the second screen (if available)
+            CustomerWindow customerWindow = new CustomerWindow();
+            if (screens.Count > 1)
+            {
+                var screen2 = screens[1];
+                customerWindow.Left = screen2.Bounds.Left;
+                customerWindow.Top = screen2.Bounds.Top;
+                customerWindow.Width = screen2.Bounds.Width;
+                customerWindow.Height = screen2.Bounds.Height;
+            }
+            else
+            {
+                MessageBox.Show("Only one screen detected. Running both windows on the same screen.");
+            }
+            customerWindow.Show();
+        */
         }
     }
-
 }

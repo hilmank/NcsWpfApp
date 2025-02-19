@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Confirm Order Status"
         Height="200" Width="350"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         WindowStyle="ToolWindow">
 
@@ -19,14 +19,19 @@
 
         <!-- Action Selection -->
         <ComboBox x:Name="cmbAction" 
+                  Style="{StaticResource ThemedComboBox}"
                   ItemsSource="{Binding StatusOptions}" 
                   SelectedItem="{Binding SelectedAction, Mode=TwoWay}"
                   Margin="10" Height="30"/>
 
         <!-- Buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
-            <Button Content="Submit" Width="80" Height="30" Command="{Binding SubmitCommand}"/>
-            <Button Content="Cancel" Width="80" Height="30" Margin="10,0,0,0" Click="Cancel_Click"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Submit"                 
+                    Style="{DynamicResource ThemedButton}"
+                    Command="{Binding SubmitCommand}"/>
+            <Button Content="Cancel"                 
+                    Style="{DynamicResource ThemedButton}"
+                    Click="Cancel_Click"/>
         </StackPanel>
     </Grid>
 </Window>
