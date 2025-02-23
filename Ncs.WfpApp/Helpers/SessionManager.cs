@@ -121,7 +121,7 @@ namespace Ncs.WpfApp.Helpers
             object storedValue = Registry.GetValue(RegistryPath, key, null);
             if (storedValue == null) return string.Empty;
 
-            return storedValue.ToString();
+            return storedValue?.ToString() ?? string.Empty;
         }
 
         private static void DeleteToken(string key)

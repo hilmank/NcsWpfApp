@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Ncs.WpfApp.ViewModels;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -63,5 +64,21 @@ namespace Ncs.WpfApp.Views
                 await viewModel.LoadMenuDataAsync();
             }
         }
+        private async void txtRfidInput_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                if (!string.IsNullOrWhiteSpace(textBox.Text))
+                {
+                    // Wait a short delay to ensure scanning is complete
+                    await Task.Delay(200);
+
+                    // Call RFID processing method in ViewModel
+                    await ((CustomerViewModel)DataContext).ProcessRfidInput();
+                }
+            }
+        }
+
     }
+
 }

@@ -9,12 +9,14 @@
     Height="450" 
     Width="400"
     WindowStartupLocation="CenterScreen"
-    ResizeMode="NoResize"
+    ResizeMode="CanResize"
+    SizeToContent="Height"
     WindowStyle="None"
     xmlns:local="clr-namespace:Ncs.WpfApp.Converters"
     Background="{DynamicResource PrimaryBackground}">
     <Window.Resources>
         <local:BooleanToSignInTextConverter x:Key="BooleanToSignInTextConverter"/>
+        <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -112,8 +114,14 @@
                     PasswordChanged="PasswordBox_PasswordChanged"/>
 
                 <TextBlock                 
-                    Text="{Binding ErrorMessage}" 
-                    Foreground="Red"/>
+    Text="{Binding ErrorMessage}" 
+    Foreground="Red"
+    TextWrapping="Wrap"
+    MaxWidth="300"
+    VerticalAlignment="Top"
+    TextAlignment="Left"
+    Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+
 
                 <Button 
                     Style="{DynamicResource ThemedButton}"

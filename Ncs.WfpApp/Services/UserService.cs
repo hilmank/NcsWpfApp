@@ -22,8 +22,7 @@ namespace Ncs.WpfApp.Services
             var requestBody = new { UsernameOrEmail = user.UsernameOrEmail, Password = user.Password };
             var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
 
-//            var response = await _httpClient.PostAsync("/api/auth/login", content);
-            var response = await HttpClientHelper.PostAsync("/api/auth/login", user);
+            var response = await HttpClientHelper.PostAsync($"{ConfigurationHelper.GetApiVersion()}/auth/login", user);
 
             var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
             if (message != "Success")
@@ -58,10 +57,7 @@ namespace Ncs.WpfApp.Services
         public async Task<ApiResponseModel<UserSignInResponseModel>> RfidSignInAsync(string rfidTag)
         {
             var requestBody = new { RfidTagId = rfidTag };
-            var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
-
-            //var response = await _httpClient.PostAsync("/api/auth/rfid-login", content);
-            var response = await HttpClientHelper.PostAsync("/api/auth/rfid-login", content);
+            var response = await HttpClientHelper.PostAsync($"{ConfigurationHelper.GetApiVersion()}/auth/rfid-login", requestBody);
             var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
             if (message != "Success")
             {
@@ -100,7 +96,7 @@ namespace Ncs.WpfApp.Services
                 };
             }
 
-            var response = await HttpClientHelper.GetAsync("/api/users");
+            var response = await HttpClientHelper.GetAsync($"{ConfigurationHelper.GetApiVersion()}/users");
             var responseContent = await response.Content.ReadAsStringAsync();
 
             var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<IEnumerable<UsersDto>>>(responseContent);
@@ -159,7 +155,7 @@ namespace Ncs.WpfApp.Services
                 };
             }
 
-            var response = await HttpClientHelper.GetAsync("/api/masters/companies");
+            var response = await HttpClientHelper.GetAsync($"{ConfigurationHelper.GetApiVersion()}/masters/companies");
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -188,7 +184,7 @@ namespace Ncs.WpfApp.Services
                 };
             }
 
-            var response = await HttpClientHelper.GetAsync("/api/masters/personal-types");
+            var response = await HttpClientHelper.GetAsync($"{ConfigurationHelper.GetApiVersion()}/masters/personal-types");
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -217,7 +213,7 @@ namespace Ncs.WpfApp.Services
                 };
             }
 
-            var response = await HttpClientHelper.GetAsync("/api/masters/roles");
+            var response = await HttpClientHelper.GetAsync($"{ConfigurationHelper.GetApiVersion()}/masters/roles");
             var responseContent = await response.Content.ReadAsStringAsync();
 
             var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<IEnumerable<RolesDto>>>(responseContent);
@@ -236,7 +232,7 @@ namespace Ncs.WpfApp.Services
 
         public async Task<ApiResponseModel<bool>> SaveUserAsync(UserAddModel user)
         {
-            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
+            if (string.IsNullOrEmpty(SessionManager.AdminToken))
             {
                 return new ApiResponseModel<bool>
                 {
@@ -246,7 +242,7 @@ namespace Ncs.WpfApp.Services
                 };
             }
 
-            var response = await HttpClientHelper.PostAsync("/api/users", user);
+            var response = await HttpClientHelper.PostAsync($"{ConfigurationHelper.GetApiVersion()}/users", user);
             var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
             if (message != "Success")
             {

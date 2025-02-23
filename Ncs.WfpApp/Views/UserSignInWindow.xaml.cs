@@ -88,11 +88,12 @@ namespace Ncs.WpfApp.Views
         }
         private void ImageCustomer_Click(object sender, MouseButtonEventArgs e)
         {
-            var customerPage = new CustomerWindow
-            {
-                WindowState = WindowState.Maximized
-            };
-            customerPage.Show();
+            //var customerPage = new CustomerWindow
+            //{
+            //    WindowState = WindowState.Maximized
+            //};
+            //customerPage.Show();
+            System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, "customer");
         }
 
         private void ImageCustomer_MouseEnter(object sender, MouseEventArgs e)

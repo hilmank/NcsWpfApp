@@ -4,7 +4,6 @@ namespace Ncs.WpfApp.Services.Interfaces
 {
     public interface IReservationService
     {
-        Task<ApiResponseModel<IEnumerable<ReservationListModel>>> GetReservationsAsync();
-        Task<ApiResponseModel<IEnumerable<ReservationListModel>>> SearchReservationsAsync(string searchText);
+        Task<ApiResponseModel<IEnumerable<ReservationListModel>>> GetReservationsTodayAsync(string? searchText, List<string>? reservationStatuss);
     }
 }

@@ -2,6 +2,8 @@
 using System.Net.Http;
 using System.Net;
 using System.Threading.Tasks;
+using Ncs.WpfApp.Models;
+using System.Text.Json;
 
 public class ApiResponseHandler
 {
@@ -9,17 +11,32 @@ public class ApiResponseHandler
     {
         string responseContent = await response.Content.ReadAsStringAsync();
 
-        string message = response.StatusCode switch
+        try
         {
-            HttpStatusCode.OK => "Success",
-            HttpStatusCode.BadRequest => "Bad Request: Invalid syntax in the request.",
-            HttpStatusCode.Unauthorized => "Unauthorized: Authentication is required or has failed.",
-            HttpStatusCode.Forbidden => "Forbidden: You do not have permission to access this resource.",
-            HttpStatusCode.NotFound => "Not Found: The requested resource could not be found.",
-            HttpStatusCode.InternalServerError => "Internal Server Error: Something went wrong on the server.",
-            _ => $"Unexpected Error: {response.StatusCode}"
-        };
+            // Deserialize the JSON response into ApiResponseModel<object>
+            var apiResponse = JsonSerializer.Deserialize<ApiResponseModel<object>>(responseContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true // Allows case-insensitive property mapping
+            });
 
-        return (message, responseContent);
+            if (apiResponse != null)
+            {
+                // If request was not successful OR the status code is not OK, return error messages
+                if (!apiResponse.Success || response.StatusCode != HttpStatusCode.OK)
+                {
+                    return (apiResponse.Message ?? "Unknown error", apiResponse.MessageDetail ?? "");
+                }
+
+                // Return success message
+                return ("Success", "");
+            }
+        }
+        catch (JsonException)
+        {
+            // Return parsing error if JSON is malformed
+            return ("Error parsing response", responseContent);
+        }
+
+        return ("Unexpected error", responseContent);
     }
 }

@@ -15,11 +15,5 @@
             public required string OrderStatus { get; set; }
             public required string OrderDate { get; set; }
             public required string ReservationDate { get; set; }
-
-        public OrderParameters OrderParameter => new OrderParameters
-        {
-            OrderStatus = OrderStatus,
-            OrderId = OrdersId
-        };
     }
 }

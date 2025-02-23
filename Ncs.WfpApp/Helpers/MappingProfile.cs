@@ -15,7 +15,7 @@ namespace Ncs.WpfApp.Helpers
             CreateMap<UsersDto, UserListModel>()
                 .ForMember(dest => dest.UsersId, opt => opt.MapFrom(src => src.Id.ToString()))
                 .ForMember(dest => dest.UsersName, opt => opt.MapFrom(src => src.Fullname))
-                .ForMember(dest => dest.UsersRfidTag, opt => opt.MapFrom(src => src.RfidTag ?? "N/A"))
+                .ForMember(dest => dest.UsersRfidTag, opt => opt.MapFrom(src => src.RfidTag ?? ""))
                 .ForMember(dest => dest.UsersEmail, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.UsersPhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                 .ForMember(dest => dest.UsersIdType, opt => opt.MapFrom(src => src.PersonalIdType != null ? src.PersonalIdType.Name : "Employee Number"))
@@ -30,14 +30,15 @@ namespace Ncs.WpfApp.Helpers
                 .ForMember(dest => dest.OrdersUserName, opt => opt.MapFrom(src => src.UserOrder.Fullname))
                 .ForMember(dest => dest.OrdersUserCompany, opt => opt.MapFrom(src => src.UserOrder.Company != null ? src.UserOrder.Company.Name : src.UserOrder.GuestCompanyName))
                 .ForMember(dest => dest.ReservationGuestsId, opt => opt.MapFrom(src => src.ReservationGuestsId))
-                .ForMember(dest => dest.OrdersUserGuestName, opt => opt.MapFrom(src => src.ReservationGuests != null ? src.ReservationGuests.Fullname : "N/A"))
-                .ForMember(dest => dest.OrdersUserGuestCompany, opt => opt.MapFrom(src => src.ReservationGuests != null ? src.ReservationGuests.CompanyName : "N/A"))
+                .ForMember(dest => dest.OrdersUserGuestName, opt => opt.MapFrom(src => src.ReservationGuests != null ? src.ReservationGuests.Fullname : ""))
+                .ForMember(dest => dest.OrdersUserGuestCompany, opt => opt.MapFrom(src => src.ReservationGuests != null ? src.ReservationGuests.CompanyName : ""))
                 .ForMember(dest => dest.MenuItemsName, opt => opt.MapFrom(src => src.MenuItem.Name))
                 .ForMember(dest => dest.MenuVariant, opt => opt.MapFrom(src => src.MenuVariant)) // Auto-property dari IsSpicy
                 .ForMember(dest => dest.OrderType, opt => opt.MapFrom(src => src.OrderType))
                 .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(src => src.OrderStatus))
                 .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.CreatedAt))
-                .ForMember(dest => dest.ReservationDate, opt => opt.MapFrom(src => src.Reservation != null ? src.Reservation.ReservedDate : "N/A"));
+                .ForMember(dest => dest.ReservationDate, opt => opt.MapFrom(src => src.Reservation != null ? src.Reservation.ReservedDate : ""));
+            
             CreateMap<MenuSchedulesDto, DailyMenuModel>()
                 .ForMember(dest => dest.MenuId, opt => opt.MapFrom(src => src.MenuItem.Id))
                 .ForMember(dest => dest.MenuName, opt => opt.MapFrom(src => src.MenuItem.Name))

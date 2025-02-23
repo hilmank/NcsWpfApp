@@ -68,38 +68,14 @@ namespace Ncs.WpfApp
             var mainWindow = ServiceProvider.GetService<UserSignInWindow>();
             mainWindow?.Show();
 
-            /*
             base.OnStartup(e);
 
-            // Get all screens
-            var screens = Screen.AllScreens.ToList();
-            AdminWindow adminWindow = new AdminWindow();
-            if (screens.Count > 0)
+            if (e.Args.Length > 0 && e.Args[0] == "customer")
             {
-                var screen1 = screens[0];
-                adminWindow.Left = screen1.Bounds.Left;
-                adminWindow.Top = screen1.Bounds.Top;
-                adminWindow.Width = screen1.Bounds.Width;
-                adminWindow.Height = screen1.Bounds.Height;
+                // Run the Customer Window as a separate instance
+                var customerWindow = new CustomerWindow();
+                customerWindow.Show();
             }
-            adminWindow.Show();
-
-            // Create and show Customer Window on the second screen (if available)
-            CustomerWindow customerWindow = new CustomerWindow();
-            if (screens.Count > 1)
-            {
-                var screen2 = screens[1];
-                customerWindow.Left = screen2.Bounds.Left;
-                customerWindow.Top = screen2.Bounds.Top;
-                customerWindow.Width = screen2.Bounds.Width;
-                customerWindow.Height = screen2.Bounds.Height;
-            }
-            else
-            {
-                MessageBox.Show("Only one screen detected. Running both windows on the same screen.");
-            }
-            customerWindow.Show();
-        */
         }
     }
 }

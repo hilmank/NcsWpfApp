@@ -189,19 +189,54 @@ namespace Ncs.WpfApp.ViewModels
                 }
             });
         }
-        private async Task ProcessRfidInput()
+        public async Task ProcessRfidInput()
         {
             if (string.IsNullOrEmpty(RfidInput)) return;
 
+            // 🔹 Automatically Trim Extra Spaces or Special Characters
+            RfidInput = RfidInput.Trim();
+
+            // 🔹 Check if the RFID contains only valid characters (numbers or letters)
+            if (!System.Text.RegularExpressions.Regex.IsMatch(RfidInput, @"^[A-Za-z0-9]+$"))
+            {
+                MessageBox.Show("Invalid RFID format. Only alphanumeric characters are allowed.",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                RfidInput = string.Empty; // Clear input
+                return;
+            }
+
+            // 🔹 Detect RFID Length Dynamically
+            int rfidLength = RfidInput.Length;
+
+            // Common RFID tag lengths (adjust if necessary)
+            HashSet<int> validRfidLengths = new HashSet<int> { 4, 7, 10, 12, 24, 32 };
+
+            if (!validRfidLengths.Contains(rfidLength))
+            {
+                MessageBox.Show($"Invalid RFID length ({rfidLength} characters).",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                RfidInput = string.Empty; // Clear input
+                return;
+            }
+
+            // Proceed with authentication
             var response = await _userService.RfidSignInAsync(RfidInput);
             if (!response.Success)
             {
-                MessageBox.Show("Failed to confirm order." + Environment.NewLine + response.MessageDetail, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Failed to confirm order." + Environment.NewLine + response.MessageDetail,
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
+            // 🔹 Clear Input After Successful Scan
             RfidInput = string.Empty;
-            CustomerInfo = $"{response?.Data?.User.EmployeeNumber} / {response?.Data?.User.Fullname} / {(response?.Data?.User.Company == null ? response?.Data?.User.GuestCompanyName : response?.Data?.User.Company.Name)}";
+
+            // 🔹 Display Customer Information
+            CustomerInfo = $"{(response?.Data?.User.EmployeeNumber == null ? response?.Data?.User?.PersonalIdNumber : response?.Data?.User.EmployeeNumber)} / {response?.Data?.User.Fullname} / " +
+                           $"{(response?.Data?.User.Company == null ? response?.Data?.User.GuestCompanyName : response?.Data?.User.Company.Name)}";
         }
+
+
         private void OpenMenuConfirmation(int menuId)
         {
             var viewModel = new CustomerMenuConfirmationViewModel(_orderService);

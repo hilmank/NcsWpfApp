@@ -6,7 +6,8 @@ namespace Ncs.WpfApp.Helpers
     {
         public static string GetApiBaseUrl()
         {
-            return ConfigurationManager.AppSettings["ApiBaseUrl"] ?? "http://localhost:5000";
+            return ConfigurationManager.AppSettings["ApiBaseUrl"] ?? "http://localhost:4000";
         }
+        public static string GetApiVersion() => ConfigurationManager.AppSettings["ApiVersion"] ?? "/api/v1";
     }
 }

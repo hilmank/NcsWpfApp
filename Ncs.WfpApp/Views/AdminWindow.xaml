@@ -4,9 +4,9 @@
         Title="Customer Page" 
         Height="600" Width="1000"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized"
-        WindowStyle="None"
         Background="{DynamicResource PrimaryBackground}">
+    <!--WindowState="Maximized"-->
+    <!--" WindowStyle="None" -->
 
     <Grid>
         <!-- Define Row Definitions for Header, Content, and Footer -->
@@ -41,10 +41,59 @@
             </Border>
             <Border Grid.Column="1">
                 <StackPanel>
-                    <Grid/>
+                    <Label 
+                        Content="ADMIN CANTEEN" 
+                        Style="{DynamicResource ThemedLabel}" 
+                        FontSize="60" 
+                        FontWeight="Bold"/>
                 </StackPanel>
             </Border>
             <Border Grid.Column="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="50*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" 
+                            BorderThickness="1" 
+                            BorderBrush="{DynamicResource  BorderBrushColor}" 
+                            Background="{DynamicResource PanelTitleBackground}" 
+                            CornerRadius="10"
+                            Margin="5,5,5,5">
+                        <StackPanel Orientation="Vertical">
+                            <Label Content="{Binding Menu1Name}" 
+                                Style="{DynamicResource ThemedLabel}" 
+                                HorizontalAlignment="Center"
+                                Margin="0,0,0,0"/>
+                            <Label Content="{Binding Menu1Available}" 
+                                    Style="{DynamicResource ThemedLabel}"
+                                    FontSize="40"
+                                    FontWeight="Bold"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" 
+                            BorderThickness="1" 
+                            BorderBrush="{DynamicResource  BorderBrushColor}" 
+                            Background="{DynamicResource PanelTitleBackground}" 
+                            CornerRadius="10"
+                            Margin="5,5,5,5">
+                        <StackPanel Orientation="Vertical">
+                            <Label Content="{Binding Menu2Name}" 
+                                    Style="{DynamicResource ThemedLabel}" 
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,0"/>
+                            <Label Content="{Binding Menu2Available}" 
+                                    Style="{DynamicResource ThemedLabel}"
+                                    FontSize="40"
+                                    FontWeight="Bold"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
 
             </Border>
 
@@ -74,72 +123,9 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                    <TextBox Width="200" 
-                                            Height="30" 
-                                            Name="SearchTextBoxOrders" 
-                                            Margin="10"
-                                            Style="{DynamicResource ThemedTextBox}"
-                                            FontWeight="Regular"
-                                            Text="{Binding SearchTextOrders, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <Button 
-                                        Content="Search" 
-                                        Width="100" 
-                                        Height="30"
-                                        Style="{DynamicResource ThemedButton}" 
-                                        Command="{Binding SearchCommandOrders}"
-                                        Margin="10,0,0,0"/>
-                                    <Button 
-                                        Content="Refresh" 
-                                        Width="100" 
-                                        Height="30"
-                                        Style="{DynamicResource ThemedButton}"
-                                        Command="{Binding RefreshCommandOrders}"
-                                        Margin="10,0,0,0"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Margin="0,0,15,0">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="50*"/>
-                                            <ColumnDefinition Width="5"/>
-                                            <ColumnDefinition Width="50*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0" 
-                                                BorderThickness="1" 
-                                                BorderBrush="{DynamicResource  BorderBrushColor}" 
-                                                Background="{DynamicResource PanelTitleBackground}" 
-                                                CornerRadius="10">
-                                            <StackPanel Orientation="Vertical">
-                                                <Label Content="{Binding Menu1Name}" 
-                                                       Style="{DynamicResource ThemedLabel}" 
-                                                       HorizontalAlignment="Center"
-                                                       Margin="0,0,0,0"/>
-                                                <Label Content="{Binding Menu1Available}" 
-                                                       Style="{DynamicResource ThemedLabel}"
-                                                       FontSize="20"
-                                                       FontWeight="Bold"
-                                                       HorizontalAlignment="Center"
-                                                       Margin="0,0,0,0"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border Grid.Column="2" 
-                                                BorderThickness="1" 
-                                                BorderBrush="{DynamicResource  BorderBrushColor}" 
-                                                Background="{DynamicResource PanelTitleBackground}" 
-                                                CornerRadius="10">
-                                            <StackPanel Orientation="Vertical">
-                                                <Label Content="{Binding Menu2Name}" 
-                                                       Style="{DynamicResource ThemedLabel}" 
-                                                       HorizontalAlignment="Center"
-                                                       Margin="0,0,0,0"/>
-                                                <Label Content="{Binding Menu2Available}" 
-                                                       Style="{DynamicResource ThemedLabel}"
-                                                       FontSize="20"
-                                                       FontWeight="Bold"
-                                                       HorizontalAlignment="Center"
-                                                       Margin="0,0,0,0"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </Grid>
+
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -153,17 +139,17 @@
                                   Margin="10"
                                   MouseLeftButtonDown="OrdersDataGrid_MouseLeftButtonDown">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Orders ID" Binding="{Binding OrdersId}" Width="Auto" />
-                                <DataGridTextColumn Header="User Id" Binding="{Binding OrdersUserId}" Width="Auto" />
-                                <DataGridTextColumn Header="Order Type" Binding="{Binding OrderType}" Width="Auto" />
-                                <DataGridTextColumn Header="Order Date" Binding="{Binding OrderDate}" Width="Auto" />
-                                <DataGridTextColumn Header="Reservation Date" Binding="{Binding ReservationDate}" Width="Auto" />
+                                <DataGridTextColumn Header="Orders ID" Binding="{Binding OrdersId}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="User Id" Binding="{Binding OrdersUserId}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="Order Type" Binding="{Binding OrderType}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="Order Date" Binding="{Binding OrderDate}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Reservation Date" Binding="{Binding ReservationDate}" Width="Auto" FontWeight="Regular" />
                                 <DataGridTextColumn Header="Name" Binding="{Binding OrdersUserName}" Width="Auto" />
-                                <DataGridTextColumn Header="Company" Binding="{Binding OrdersUserCompany}" Width="Auto" />
+                                <DataGridTextColumn Header="Company" Binding="{Binding OrdersUserCompany}" Width="Auto" FontWeight="Regular" />
                                 <DataGridTextColumn Header="Guest Name" Binding="{Binding OrdersUserGuestName}" Width="Auto" />
-                                <DataGridTextColumn Header="Guest Company" Binding="{Binding OrdersUserGuestCompany}" Width="Auto" />
-                                <DataGridTextColumn Header="Menu Name" Binding="{Binding MenuItemsName}" Width="Auto" />
-                                <DataGridTextColumn Header="Variant" Binding="{Binding MenuVariant}" Width="Auto" />
+                                <DataGridTextColumn Header="Guest Company" Binding="{Binding OrdersUserGuestCompany}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Menu Name" Binding="{Binding MenuItemsName}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Variant" Binding="{Binding MenuVariant}" Width="Auto" FontWeight="Regular" />
 
                                 <DataGridTemplateColumn Header="Status" Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -189,6 +175,87 @@
                             <Label Style="{DynamicResource ThemedLabel}" Content="{Binding CurrentPageOrders}" VerticalAlignment="Center" Margin="10"/>
                             <Button Style="{DynamicResource ThemedButton}" Content="Next" Width="70" Command="{Binding NextPageCommandOrders}"/>
                             <Button Style="{DynamicResource ThemedButton}" Content="Last" Width="70" Command="{Binding LastPageCommandOrders}"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+                <!-- All Orders Tab -->
+                <TabItem Header="All Orders" Style="{DynamicResource ThemedTabItem}">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Search Bar -->
+                            <RowDefinition Height="*"/>
+                            <!-- DataGrid -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Pagination -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Search & Refresh Bar -->
+                        <StackPanel Grid.Row="0" Margin="0 0 0 10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <TextBox Width="200" 
+                                            Height="30" 
+                                            Name="SearchTextBoxAllAllOrders" 
+                                            Margin="10"
+                                            Style="{DynamicResource ThemedTextBox}"
+                                            FontWeight="Regular"
+                                            Text="{Binding SearchTextAllOrders, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Button 
+                                        Content="Search" 
+                                        Width="100" 
+                                        Height="30"
+                                        Style="{DynamicResource ThemedButton}" 
+                                        Command="{Binding SearchCommandAllOrders}"
+                                        Margin="10,0,0,0"/>
+                                    <Button 
+                                        Content="Refresh" 
+                                        Width="100" 
+                                        Height="30"
+                                        Style="{DynamicResource ThemedButton}"
+                                        Command="{Binding RefreshCommandAllOrders}"
+                                        Margin="10,0,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="0,0,15,0">
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                        <!-- AllOrders DataGrid -->
+                        <DataGrid Grid.Row="1" 
+                                  Name="AllAllOrdersDataGrid" 
+                                  ItemsSource="{Binding AllOrders}" 
+                                  Style="{StaticResource ThemedDataGrid}"
+                                  ColumnHeaderStyle="{StaticResource ThemedDataGridColumnHeader}" 
+                                  AutoGenerateColumns="False" 
+                                  Margin="10">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Orders ID" Binding="{Binding OrdersId}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="User Id" Binding="{Binding OrdersUserId}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="Order Type" Binding="{Binding OrderType}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="Order Date" Binding="{Binding OrderDate}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Reservation Date" Binding="{Binding ReservationDate}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Name" Binding="{Binding OrdersUserName}" Width="Auto" />
+                                <DataGridTextColumn Header="Company" Binding="{Binding OrdersUserCompany}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Guest Name" Binding="{Binding OrdersUserGuestName}" Width="Auto" />
+                                <DataGridTextColumn Header="Guest Company" Binding="{Binding OrdersUserGuestCompany}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Menu Name" Binding="{Binding MenuItemsName}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Variant" Binding="{Binding MenuVariant}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Status" Binding="{Binding OrderStatus}" Width="*" FontWeight="Regular" />                            
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- Pagination Controls -->
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                            <Button Style="{DynamicResource ThemedButton}" Content="First" Width="70" Command="{Binding FirstPageCommandAllOrders}"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Previous" Width="90" Command="{Binding PreviousPageCommandAllOrders}"/>
+                            <Label Style="{DynamicResource ThemedLabel}" Content="{Binding CurrentPageAllOrders}" VerticalAlignment="Center" Margin="10"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Next" Width="70" Command="{Binding NextPageCommandAllOrders}"/>
+                            <Button Style="{DynamicResource ThemedButton}" Content="Last" Width="70" Command="{Binding LastPageCommandAllOrders}"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -239,12 +306,16 @@
                                   AutoGenerateColumns="False" 
                                   Margin="10">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Reservations ID" Binding="{Binding ReservationsId}" Width="Auto" />
-                                <DataGridTextColumn Header="Customer Name" Binding="{Binding ReservationsCustomerName}" Width="*" />
-                                <DataGridTextColumn Header="Reservations Date" Binding="{Binding ReservationsDate}" Width="Auto" />
-                                <DataGridTextColumn Header="Total Amount" Binding="{Binding TotalAmountReservations, StringFormat=C}" Width="Auto" />
-                                <DataGridTextColumn Header="Status" Binding="{Binding StatusReservations}" Width="*" />
-                            </DataGrid.Columns>
+                                <DataGridTextColumn Header="Reservations ID" Binding="{Binding ReservationsId}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="User Id" Binding="{Binding ReservationsUserId}" Width="Auto" FontWeight="Regular"/>
+                                <DataGridTextColumn Header="Reservation Date" Binding="{Binding ReservationDate}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Name" Binding="{Binding ReservationsUserName}" Width="Auto" />
+                                <DataGridTextColumn Header="Company" Binding="{Binding ReservationsUserCompany}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Guest Name" Binding="{Binding ReservationsUserGuestName}" Width="Auto" />
+                                <DataGridTextColumn Header="Guest Company" Binding="{Binding ReservationsUserGuestCompany}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Menu Name" Binding="{Binding MenuItemsName}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Variant" Binding="{Binding MenuVariant}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Status" Binding="{Binding ReservationStatus}" Width="*" FontWeight="Regular" />                            </DataGrid.Columns>
                         </DataGrid>
 
                         <!-- Pagination Controls -->

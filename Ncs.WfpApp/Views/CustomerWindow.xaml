@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Customer Page" 
         Height="600" Width="1000"
-        ResizeMode="NoResize"
-        WindowState="Maximized"
         Background="{DynamicResource PrimaryBackground}">
-
+    <!--        ResizeMode="NoResize"
+        WindowState="Maximized"
+-->
     <Grid>
         <!-- Define Row Definitions for Header, Content, and Footer -->
         <Grid.RowDefinitions>
@@ -42,12 +42,9 @@
                 <StackPanel>
                     <Grid>
                         <TextBox x:Name="txtRfidInput"
-                             Text="{Binding RfidInput, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{StaticResource ThemedTextBox}">
-                            <TextBox.InputBindings>
-                                <KeyBinding Key="Enter" Command="{Binding RfidEnterCommand}" />
-                            </TextBox.InputBindings>
-                        </TextBox>
+         Text="{Binding RfidInput, UpdateSourceTrigger=PropertyChanged}"
+         Style="{StaticResource ThemedTextBox}"
+         TextChanged="txtRfidInput_TextChanged"/>
                     </Grid>
                     <Button 
                         x:Name="btnCancel" 

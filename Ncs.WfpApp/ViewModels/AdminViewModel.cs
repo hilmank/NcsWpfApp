@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Ncs.WpfApp.Helpers;
 using Ncs.WpfApp.Models;
+using Ncs.WpfApp.Services;
 using Ncs.WpfApp.Services.Interfaces;
 using Ncs.WpfApp.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Ncs.WpfApp.ViewModels
@@ -16,6 +16,7 @@ namespace Ncs.WpfApp.ViewModels
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly IOrderService _orderService;
+        private readonly IReservationService _reservationService;
 
         public AdminViewModel(
             IOrderService orderService,
@@ -27,9 +28,10 @@ namespace Ncs.WpfApp.ViewModels
             #region Orders
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             Orders = new ObservableCollection<OrderListModel>();
-            SearchCommandOrders = new RelayCommand(async () => await LoadDataOrdersAsync(SearchTextOrders), () => true);
-            RefreshCommandOrders = new RelayCommand(async () => await RefreshDataOrdersAsync(), () => true);
-            StatusActionCommandOrders = new RelayCommand<object>(async param => StatusAction(param), param => param != null);
+            StatusActionCommandOrders = new RelayCommand<object>(param => StatusAction(param), param => param != null);
+
+            SearchCommandAllOrders = new RelayCommand(async () => await LoadDataAllOrdersAsync(), () => true);
+            RefreshCommandAllOrders = new RelayCommand(async () => await RefreshDataAllOrdersAsync(), () => true);
 
             #endregion
 
@@ -44,11 +46,24 @@ namespace Ncs.WpfApp.ViewModels
             LastPageCommandUsers = new RelayCommand(async () => await NavigateToLastPageUsers(), () => true);
             AddCommandUsers = new RelayCommand(OpenUserAddWindow, () => true);
             #endregion
+
+            #region Reservations
+            _reservationService = reservationService ?? throw new ArgumentNullException(nameof(ReservationService));
+            Reservations = new ObservableCollection<ReservationListModel>();
+            SearchCommandReservations = new RelayCommand(async () => await LoadDataReservationsAsync(), () => true);
+            RefreshCommandReservations = new RelayCommand(async () => await RefreshDataReservationsAsync(), () => true);
+            FirstPageCommandReservations = new RelayCommand(async () => await NavigateToFirstPageReservations(), () => true);
+            PreviousPageCommandReservations = new RelayCommand(async () => await NavigateToPreviousPageReservations(), () => true);
+            NextPageCommandReservations = new RelayCommand(async () => await NavigateToNextPageReservations(), () => true);
+            LastPageCommandReservations = new RelayCommand(async () => await NavigateToLastPageReservations(), () => true);
+            #endregion
         }
         public async Task LoadAllDataAsync()
         {
-            await LoadDataUsersAsync();
             await LoadDataOrdersAsync();
+            await LoadDataAllOrdersAsync();
+            await LoadDataUsersAsync();
+            await LoadDataReservationsAsync();
         }
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -89,7 +104,7 @@ namespace Ncs.WpfApp.ViewModels
             get => _statusActionOrders;
             set { _statusActionOrders = value; OnPropertyChanged(); }
         }
-        private ObservableCollection<OrderListModel> _orders = new ObservableCollection<OrderListModel>();
+        private ObservableCollection<OrderListModel> _orders = [];
         public ObservableCollection<OrderListModel> Orders
         {
             get => _orders;
@@ -99,14 +114,12 @@ namespace Ncs.WpfApp.ViewModels
                 OnPropertyChanged(nameof(Orders)); 
             }
         }
-        public ICommand SearchCommandOrders { get; }
-        public ICommand RefreshCommandOrders { get; }
         public ICommand StatusActionCommandOrders { get; }
-        public string SearchTextOrders { get; set; }
-        public async Task LoadDataOrdersAsync(string searchText = "")
+        public async Task LoadDataOrdersAsync()
         {
-            var result = await _orderService.GetOrderAsync(searchText);
-            if (result?.Data != null && result.Success)
+            List<string> orderStatuss = ["Ordered", "InProcess"];
+            var result = await _orderService.GetOrderTodayAsync(string.Empty, orderStatuss);
+            if (result?.Data != null && result.Success) 
             {
                 Menu1Name = result.Data.Menu1Name;
                 Menu1Available = result.Data.Menu1Available;
@@ -119,7 +132,6 @@ namespace Ncs.WpfApp.ViewModels
                 }
             }
         }
-        private async Task RefreshDataOrdersAsync() => await LoadDataOrdersAsync();
         private void StatusAction(object parameter)
         {
             if (parameter is OrderParameters orderParam)
@@ -132,12 +144,47 @@ namespace Ncs.WpfApp.ViewModels
                 confirmationWindow.ShowDialog();
             }
         }
-
-
-
-
-
         #endregion
+
+        #region All AllOrders
+        private ObservableCollection<OrderListModel> _allOrders = [];
+        public ObservableCollection<OrderListModel> AllOrders
+        {
+            get => _allOrders;
+            set
+            {
+                _allOrders = value;
+                OnPropertyChanged(nameof(AllOrders));
+            }
+        }
+        private string _searchTextAllOrders;
+        public string SearchTextAllOrders
+        {
+            get => _searchTextAllOrders;
+            set { _searchTextAllOrders = value; OnPropertyChanged(); }
+        }
+
+        public ICommand SearchCommandAllOrders { get; }
+        public ICommand RefreshCommandAllOrders { get; }
+        public async Task LoadDataAllOrdersAsync()
+        {
+            var result = await _orderService.GetOrderTodayAsync(SearchTextAllOrders, null);
+            if (result?.Data != null && result.Success)
+            {
+                Menu1Name = result.Data.Menu1Name;
+                Menu1Available = result.Data.Menu1Available;
+                Menu2Name = result.Data.Menu2Name;
+                Menu2Available = result.Data.Menu2Available;
+                AllOrders.Clear();
+                foreach (var order in _mapper.Map<List<OrderListModel>>(result.Data.Orders))
+                {
+                    AllOrders.Add(order);
+                }
+            }
+        }
+        private async Task RefreshDataAllOrdersAsync() => await LoadDataAllOrdersAsync();
+        #endregion
+
         #region Users
         private ObservableCollection<UserListModel> _users = new ObservableCollection<UserListModel>();
         public ObservableCollection<UserListModel> Users
@@ -149,7 +196,6 @@ namespace Ncs.WpfApp.ViewModels
                 OnPropertyChanged(nameof(Users)); // ✅ Notify UI when changed
             }
         }
-        #region Users Command
         public ICommand SearchCommandUsers { get; }
         public ICommand RefreshCommandUsers { get; }
         public ICommand FirstPageCommandUsers { get; }
@@ -158,7 +204,6 @@ namespace Ncs.WpfApp.ViewModels
         public ICommand LastPageCommandUsers { get; }
         public ICommand AddCommandUsers { get; }
         public string SearchTextUsers { get; set; }
-        #endregion
 
         public async Task LoadDataUsersAsync(string searchText = "")
         {
@@ -184,6 +229,42 @@ namespace Ncs.WpfApp.ViewModels
             userAddWindow.ShowDialog();
         }
         #endregion
-
+        #region Reservations
+        private ObservableCollection<ReservationListModel> _reservations = new ObservableCollection<ReservationListModel>();
+        public ObservableCollection<ReservationListModel> Reservations
+        {
+            get => _reservations;
+            set
+            {
+                _reservations = value;
+                OnPropertyChanged(nameof(Users)); // ✅ Notify UI when changed
+            }
+        }
+        public ICommand SearchCommandReservations { get; }
+        public ICommand RefreshCommandReservations { get; }
+        public ICommand FirstPageCommandReservations { get; }
+        public ICommand PreviousPageCommandReservations { get; }
+        public ICommand NextPageCommandReservations { get; }
+        public ICommand LastPageCommandReservations { get; }
+        public ICommand AddCommandReservations { get; }
+        public string SearchTextReservations { get; set; }
+        public async Task LoadDataReservationsAsync()
+        {
+            var result = await _reservationService.GetReservationsTodayAsync(SearchTextReservations, null);
+            if (result?.Data != null && result.Success)
+            {
+                Reservations.Clear();
+                foreach (var user in _mapper.Map<List<ReservationListModel>>(result.Data))
+                {
+                    Reservations.Add(user);
+                }
+            }
+        }
+        private async Task RefreshDataReservationsAsync() => await LoadDataReservationsAsync();
+        private async Task NavigateToFirstPageReservations() { /* Pagination logic */ }
+        private async Task NavigateToPreviousPageReservations() { /* Pagination logic */ }
+        private async Task NavigateToNextPageReservations() { /* Pagination logic */ }
+        private async Task NavigateToLastPageReservations() { /* Pagination logic */ }
+        #endregion
     }
 }
