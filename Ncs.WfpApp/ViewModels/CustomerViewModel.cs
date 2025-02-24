@@ -16,9 +16,11 @@ namespace Ncs.WpfApp.ViewModels
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly IOrderService _orderService;
+        private readonly IReservationService _reservationService;
 
         private string _customerInfo;
         private string _rfidInput;
+        private int? _userId;
 
         private int _menuId1;
         private string _menuName1;
@@ -38,7 +40,7 @@ namespace Ncs.WpfApp.ViewModels
         public ICommand CancelCommand { get; }
         public ICommand RfidEnterCommand { get; }
         public ICommand SelectMenuCommand { get; }
-        public CustomerViewModel(IMapper mapper, IUserService userService, IOrderService orderService)
+        public CustomerViewModel(IMapper mapper, IUserService userService, IOrderService orderService, IReservationService reservationService)
         {
             _ = new RelayCommand(async () => await LoadCustomerInfo(), () => true);
             _ = new RelayCommand(async () => await LoadMenuDataAsync(), () => true);
@@ -49,6 +51,7 @@ namespace Ncs.WpfApp.ViewModels
             _mapper = mapper;
             _userService = userService;
             _orderService = orderService;
+            _reservationService = reservationService;
             CancelAction();
         }
 
@@ -64,6 +67,11 @@ namespace Ncs.WpfApp.ViewModels
             set { _rfidInput = value; OnPropertyChanged(); }
         }
 
+        public int? UserId
+        {
+            get => _userId;
+            set { _userId = value; OnPropertyChanged(); }
+        }
         public int MenuId1
         {
             get => _menuId1;
@@ -145,6 +153,7 @@ namespace Ncs.WpfApp.ViewModels
             else
             {
                 CustomerInfo = $"{response?.Data?.User.EmployeeNumber} / {response?.Data?.User.Fullname} / {(response?.Data?.User.Company==null? response?.Data?.User.GuestCompanyName: response?.Data?.User.Company.Name)}";
+                UserId = response?.Data?.User.Id;
             }
         }
 
@@ -179,7 +188,7 @@ namespace Ncs.WpfApp.ViewModels
             SessionManager.ClearCustomerSession();
             CustomerInfo = string.Empty;
             RfidInput = string.Empty;
-
+            UserId = null;
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var window = Application.Current.Windows.OfType<CustomerWindow>().FirstOrDefault();
@@ -234,13 +243,14 @@ namespace Ncs.WpfApp.ViewModels
             // 🔹 Display Customer Information
             CustomerInfo = $"{(response?.Data?.User.EmployeeNumber == null ? response?.Data?.User?.PersonalIdNumber : response?.Data?.User.EmployeeNumber)} / {response?.Data?.User.Fullname} / " +
                            $"{(response?.Data?.User.Company == null ? response?.Data?.User.GuestCompanyName : response?.Data?.User.Company.Name)}";
+            UserId = response?.Data?.User.Id;
         }
 
 
         private void OpenMenuConfirmation(int menuId)
         {
-            var viewModel = new CustomerMenuConfirmationViewModel(_orderService);
-            viewModel.Initialize(menuId); // Pass MenuId to the confirmation window
+            var viewModel = new CustomerMenuConfirmationViewModel(_orderService, _reservationService);
+            _ = viewModel.InitializeAsync(menuId, UserId ?? 0); // Pass MenuId to the confirmation window, default to 0 if UserId is null
 
             var confirmationWindow = new CustomerMenuConfirmationWindow
             {

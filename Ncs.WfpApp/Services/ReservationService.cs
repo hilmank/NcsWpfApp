@@ -7,40 +7,6 @@ namespace Ncs.WpfApp.Services
 {
     public class ReservationService : IReservationService
     {
-        public async Task<ApiResponseModel<IEnumerable<ReservationListModel>>> GetReservationsTodayAsync(string? searchText, List<string>? reservationStatuss)
-        {
-            // 🔹 Check if the user is signed in
-            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
-                return UnauthorizedResponse();
-
-            // 🔹 Call API to fetch reservations
-            var response = await HttpClientHelper.GetAsync($"{ConfigurationHelper.GetApiVersion()}/reservations/date?startDate={DateTime.Today:yyyy-MM-dd}&endDate={DateTime.Today:yyyy-MM-dd}");
-
-            var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
-            if (message != "Success")
-                return ErrorResponse(message, messageDetail);
-
-            // 🔹 Deserialize API response
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<List<ReservationsDto>>>(responseContent);
-
-            if (apiResponse?.Data == null)
-                return ErrorResponse("No data received", "The API response did not contain any data.");
-
-            // 🔹 Convert ReservationsDto to ReservationListModel
-            var reservationList = TransformReservationsToList(apiResponse.Data);
-
-            // 🔹 Apply Filters (Search & Status)
-            reservationList = ApplyFilters(reservationList, searchText, reservationStatuss);
-
-            return new ApiResponseModel<IEnumerable<ReservationListModel>>
-            {
-                Success = true,
-                Message = apiResponse.Message,
-                MessageDetail = apiResponse.MessageDetail,
-                Data = reservationList
-            };
-        }
 
         /// <summary>
         /// Converts a list of ReservationsDto into a list of ReservationListModel.
@@ -52,13 +18,13 @@ namespace Ncs.WpfApp.Services
 
             foreach (var reservation in reservations)
             {
-                reservationList.Add(CreateReservationRow(reservation, "", ""));
+                reservationList.Add(CreateReservationRow(reservation,null,  "", ""));
                 if (reservation.Guests != null)
                 {
                     // Each guest → Separate row
                     foreach (var guest in reservation.Guests)
                     {
-                        reservationList.Add(CreateReservationRow(reservation, guest.Fullname, guest.CompanyName));
+                        reservationList.Add(CreateReservationRow(reservation, guest.Id, guest.Fullname, guest.CompanyName));
                     }
                 }
             }
@@ -68,7 +34,7 @@ namespace Ncs.WpfApp.Services
         /// <summary>
         /// Creates a single row of ReservationListModel from a ReservationsDto.
         /// </summary>
-        private static ReservationListModel CreateReservationRow(ReservationsDto reservation, string guestName, string guestCompany)
+        private static ReservationListModel CreateReservationRow(ReservationsDto reservation, int? guestId, string guestName, string guestCompany)
         {
             return new ReservationListModel
             {
@@ -77,8 +43,10 @@ namespace Ncs.WpfApp.Services
                 ReservationDate = reservation.ReservedDate,
                 ReservationsUserName = reservation.ReservedByUser.Fullname,
                 ReservationsUserCompany = reservation.ReservedByUser.Company?.Name ?? reservation.ReservedByUser.GuestCompanyName,
+                ReservationsUserGuestId = guestId,
                 ReservationsUserGuestName = guestName,
                 ReservationsUserGuestCompany = guestCompany,
+                MenuItemsId = reservation.MenuItemsId,
                 MenuItemsName = reservation.MenuItem.Name,
                 MenuVariant = reservation.MenuVariant,
                 ReservationStatus = reservation.Status.Name
@@ -133,6 +101,64 @@ namespace Ncs.WpfApp.Services
                 Success = false,
                 Message = message,
                 MessageDetail = messageDetail
+            };
+        }
+
+        public async Task<ApiResponseModel<IEnumerable<ReservationListModel>>> GetReservationsTodayAsync(string? searchText, List<string>? reservationStatuss)
+        {
+            // 🔹 Check if the user is signed in
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
+                return UnauthorizedResponse();
+
+            // 🔹 Call API to fetch reservations
+            var response = await HttpClientHelper.GetAsync($"{ConfigurationHelper.GetApiVersion()}/reservations/date?startDate={DateTime.Today:yyyy-MM-dd}&endDate={DateTime.Today:yyyy-MM-dd}");
+
+            var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
+            if (message != "Success")
+                return ErrorResponse(message, messageDetail);
+
+            // 🔹 Deserialize API response
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<List<ReservationsDto>>>(responseContent);
+
+            if (apiResponse?.Data == null)
+                return ErrorResponse("No data received", "The API response did not contain any data.");
+
+            // 🔹 Convert ReservationsDto to ReservationListModel
+            var reservationList = TransformReservationsToList(apiResponse.Data);
+
+            // 🔹 Apply Filters (Search & Status)
+            reservationList = ApplyFilters(reservationList, searchText, reservationStatuss);
+
+            return new ApiResponseModel<IEnumerable<ReservationListModel>>
+            {
+                Success = true,
+                Message = apiResponse.Message,
+                MessageDetail = apiResponse.MessageDetail,
+                Data = reservationList
+            };
+        }
+        public async Task<ApiResponseModel<IEnumerable<ReservationListModel>>> GetReservationsByUserIdAsync(int userId)
+        {
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
+                return UnauthorizedResponse();
+
+            var reservationsToday = await GetReservationsTodayAsync(null, null);
+            if (reservationsToday is null)
+                return new ApiResponseModel<IEnumerable<ReservationListModel>>
+                {
+                    Success = false
+                };
+            var data = reservationsToday.Data.Where(x => x.ReservationsUserId == userId);
+            if (!data.Any())
+                return new ApiResponseModel<IEnumerable<ReservationListModel>>
+                {
+                    Success = false
+                };
+            return new ApiResponseModel<IEnumerable<ReservationListModel>>
+            {
+                Success = true,
+                Data = data
             };
         }
     }

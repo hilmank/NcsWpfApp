@@ -311,6 +311,7 @@
                                 <DataGridTextColumn Header="Reservation Date" Binding="{Binding ReservationDate}" Width="Auto" FontWeight="Regular" />
                                 <DataGridTextColumn Header="Name" Binding="{Binding ReservationsUserName}" Width="Auto" />
                                 <DataGridTextColumn Header="Company" Binding="{Binding ReservationsUserCompany}" Width="Auto" FontWeight="Regular" />
+                                <DataGridTextColumn Header="Guest Id" Binding="{Binding ReservationsUserGuestId}" Width="Auto" />
                                 <DataGridTextColumn Header="Guest Name" Binding="{Binding ReservationsUserGuestName}" Width="Auto" />
                                 <DataGridTextColumn Header="Guest Company" Binding="{Binding ReservationsUserGuestCompany}" Width="Auto" FontWeight="Regular" />
                                 <DataGridTextColumn Header="Menu Name" Binding="{Binding MenuItemsName}" Width="Auto" FontWeight="Regular" />

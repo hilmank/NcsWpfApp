@@ -3,15 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Ncs.WpfApp.Views"
-        mc:Ignorable="d"
-        Title="Menu Confirmation" 
-        Height="200" 
-        Width="350"
+        Title="Menu Confirmation"
+        Width="600" Height="250"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         WindowStyle="ToolWindow"
-        Background="{DynamicResource PrimaryBackground}">
+        Background="{DynamicResource PrimaryBackground}"
+        mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -19,26 +17,84 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Title -->
-        <TextBlock Text="Select Action:" FontSize="16" FontWeight="Bold" Margin="10"/>
+        <!-- Reservation DataGrid -->
+        <DataGrid x:Name="tblReservation"
+                  Grid.Row="0"
+                  ItemsSource="{Binding Reservations}"
+                  Visibility="{Binding ReservationVisibility}"
+                  ColumnHeaderStyle="{DynamicResource ThemedDataGridColumnHeader}"
+                  FontSize="10"
+                  AutoGenerateColumns="False"
+                  Margin="10,5,10,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Reservation Date" 
+                                    Binding="{Binding ReservationDate}" 
+                                    Width="Auto" 
+                                    FontSize="10" 
+                                    FontWeight="Regular"/>
+                <DataGridTextColumn Header="Name" 
+                                    Binding="{Binding ReservationsUserName}" 
+                                    Width="Auto" 
+                                    FontSize="10" 
+                                    FontWeight="Regular"/>
+                <DataGridTextColumn Header="Guest Name" 
+                                    Binding="{Binding ReservationsUserGuestName}" 
+                                    Width="Auto" 
+                                    FontSize="10" 
+                                    FontWeight="Regular"/>
+                <DataGridTextColumn Header="Menu Name" 
+                                    Binding="{Binding MenuItemsName}" 
+                                    Width="Auto" 
+                                    FontSize="10" 
+                                    FontWeight="Regular"/>
+                <DataGridTextColumn Header="Variant" 
+                                    Binding="{Binding MenuVariant}" 
+                                    Width="*" 
+                                    FontSize="10" 
+                                    FontWeight="Regular"/>
+                <!-- Hidden columns -->
+                <DataGridTextColumn Header="Reservations ID" 
+                                    Binding="{Binding ReservationsId}" 
+                                    Width="*" 
+                                    FontSize="18" 
+                                    FontWeight="Regular" 
+                                    Visibility="Collapsed"/>
+                <DataGridTextColumn Header="Guest Id" 
+                                    Binding="{Binding ReservationsUserGuestId}" 
+                                    Width="*" 
+                                    Visibility="Collapsed"/>
+                <DataGridTextColumn Header="MenuItems ID" 
+                                    Binding="{Binding MenuItemsId}" 
+                                    Width="*" 
+                                    FontSize="18" 
+                                    FontWeight="Regular" 
+                                    Visibility="Collapsed"/>
+            </DataGrid.Columns>
+        </DataGrid>
 
-        <!-- Action Selection -->
+        <!-- ComboBox for Variant Options -->
         <ComboBox x:Name="cmbAction"
+                  Grid.Row="1"
                   Style="{DynamicResource ThemedComboBox}"
-              ItemsSource="{Binding VariantOptions}" 
-              SelectedItem="{Binding SelectedVariant, Mode=TwoWay}"
-              Margin="10" Height="30"/>
+                  ItemsSource="{Binding VariantOptions}" 
+                  SelectedItem="{Binding SelectedVariant, Mode=TwoWay}"
+                  Margin="10,5,10,5" 
+                  Height="30"
+                  Width="300"
+                  Visibility="{Binding ComboBoxVisibility}"/>
 
         <!-- Buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-            <Button 
-                Content="Submit" 
-                Style="{DynamicResource ThemedButton}"
-                Command="{Binding SubmitCommand}"/>
-            <Button 
-                Content="Cancel" 
-                Style="{DynamicResource ThemedButton}" 
-                Click="Cancel_Click"/>
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Margin="10,10,10,10">
+            <Button Content="Submit"
+                    Style="{DynamicResource ThemedButton}"
+                    Command="{Binding SubmitCommand}"/>
+            <Button Content="Cancel"
+                    Style="{DynamicResource ThemedButton}"
+                    Click="Cancel_Click"/>
         </StackPanel>
     </Grid>
 </Window>
