@@ -1,23 +1,37 @@
-﻿using System;
+﻿using AutoMapper;
+using Ncs.WpfApp.Helpers;
+using Ncs.WpfApp.Models;
+using Ncs.WpfApp.Services.Interfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using Ncs.WpfApp.Services.Interfaces;
-using Ncs.WpfApp.Helpers;
 
 namespace Ncs.WpfApp.ViewModels
 {
     public class OrdersConfirmationViewModel : INotifyPropertyChanged
     {
+        private readonly IMapper _mapper;
         private readonly IOrderService _orderService;
         private int _orderId;
         private string _currentStatus;
-
-        public ObservableCollection<string> StatusOptions { get; } = new ObservableCollection<string>();
-
         private string _selectedAction;
+        private Visibility _reservationVisibility = Visibility.Collapsed;
+
+        public OrdersConfirmationViewModel(IOrderService orderService, IMapper mapper)
+        {
+            _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            _mapper = mapper;
+            SubmitCommand = new RelayCommand(async () => await SubmitAsync(), CanSubmit);
+            StatusOptions = new ObservableCollection<string>();
+            Orders = new ObservableCollection<OrderListModel>();
+        }
+
+        public ObservableCollection<string> StatusOptions { get; }
+        public ObservableCollection<OrderListModel> Orders { get; }
+        public ICommand SubmitCommand { get; }
+
         public string SelectedAction
         {
             get => _selectedAction;
@@ -25,37 +39,62 @@ namespace Ncs.WpfApp.ViewModels
             {
                 _selectedAction = value;
                 OnPropertyChanged();
-                ((RelayCommand)SubmitCommand).RaiseCanExecuteChanged(); // Notify SubmitCommand to re-evaluate its CanExecute
+                ((RelayCommand)SubmitCommand).RaiseCanExecuteChanged();
             }
         }
 
-
-        public ICommand SubmitCommand { get; }
-
-        public OrdersConfirmationViewModel(IOrderService orderService)
+        public Visibility ReservationVisibility
         {
-            _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-
-            SubmitCommand = new RelayCommand(async () => await SubmitAsync(), () => !string.IsNullOrEmpty(SelectedAction));
+            get => _reservationVisibility;
+            set
+            {
+                _reservationVisibility = value;
+                OnPropertyChanged();
+                ((RelayCommand)SubmitCommand).RaiseCanExecuteChanged();
+            }
         }
-        public void Initialize(int orderId, string currentStatus)
+
+        public async Task InitializeAsync(int orderId, string currentStatus)
         {
             _orderId = orderId;
             _currentStatus = currentStatus;
             LoadStatusOptions();
+
+            var result = await _orderService.GetReservationOrdersAsync(orderId);
+            if (result.Success)
+            {
+                ReservationVisibility = Visibility.Visible;
+                Orders.Clear();
+                foreach (var order in result?.Data )
+                {
+                    Orders.Add(_mapper.Map<OrderListModel>(order));
+                }
+            }
+            else
+            {
+                ReservationVisibility = Visibility.Collapsed;
+            }
         }
+
         private void LoadStatusOptions()
         {
-            if (_currentStatus == "Ordered")
+            StatusOptions.Clear();
+            switch (_currentStatus)
             {
-                StatusOptions.Add("Cancel");
-                StatusOptions.Add("InProcess");
+                case "Ordered":
+                    StatusOptions.Add("Cancel");
+                    StatusOptions.Add("InProcess");
+                    break;
+                case "InProcess":
+                    StatusOptions.Add("Cancel");
+                    StatusOptions.Add("Complete");
+                    break;
             }
-            else if (_currentStatus == "InProcess")
-            {
-                StatusOptions.Add("Cancel");
-                StatusOptions.Add("Complete");
-            }
+        }
+
+        private bool CanSubmit()
+        {
+            return !string.IsNullOrEmpty(SelectedAction) || ReservationVisibility == Visibility.Visible;
         }
 
         private async Task SubmitAsync()
@@ -66,16 +105,23 @@ namespace Ncs.WpfApp.ViewModels
                 return;
             }
 
-            string action = SelectedAction switch
+            string action = SelectedAction.ToLower();
+            ApiResponseModel<bool> response;
+
+            if (ReservationVisibility == Visibility.Visible && Orders.Any())
             {
-                "Cancel" => "cancel",
-                "InProcess" => "inprocess",
-                "Complete" => "complete",
-                _ => throw new ArgumentException("Invalid action")
-            };
+                response = await _orderService.SaveStatussActionAsync(action, Orders.Select(x => x.OrdersId).ToList());
+            }
+            else
+            {
+                response = await _orderService.SaveStatusActionAsync(action, _orderId);
+            }
 
-            var response = await _orderService.SaveStatusActionAsync(action, _orderId);
+            HandleResponse(response);
+        }
 
+        private void HandleResponse(ApiResponseModel<bool> response)
+        {
             if (response.Success)
             {
                 MessageBox.Show("Order status updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);

@@ -118,7 +118,7 @@ namespace Ncs.WpfApp.ViewModels
         public async Task LoadDataOrdersAsync()
         {
             List<string> orderStatuss = ["Ordered", "InProcess"];
-            var result = await _orderService.GetOrderTodayAsync(string.Empty, orderStatuss);
+            var result = await _orderService.GetOrdersTodayAsync(string.Empty, orderStatuss);
             if (result?.Data != null && result.Success) 
             {
                 Menu1Name = result.Data.Menu1Name;
@@ -134,16 +134,20 @@ namespace Ncs.WpfApp.ViewModels
         }
         private void StatusAction(object parameter)
         {
-            if (parameter is OrderParameters orderParam)
+            if (parameter is int orderId) // Ensure it's an integer
             {
+                var selectedOrder = Orders.FirstOrDefault(o => o.OrdersId == orderId);
+                if (selectedOrder != null)
+                {
+                    var viewModel = new OrdersConfirmationViewModel(_orderService, _mapper);
+                    viewModel.InitializeAsync(orderId, selectedOrder.OrderStatus);
 
-                var viewModel = new OrdersConfirmationViewModel(_orderService);
-                viewModel.Initialize(orderParam.OrderId, orderParam.OrderStatus);
-
-                var confirmationWindow = new OrdersConfirmationWindow { DataContext = viewModel };
-                confirmationWindow.ShowDialog();
+                    var confirmationWindow = new OrdersConfirmationWindow { DataContext = viewModel };
+                    confirmationWindow.ShowDialog();
+                }
             }
         }
+
         #endregion
 
         #region All AllOrders
@@ -157,6 +161,7 @@ namespace Ncs.WpfApp.ViewModels
                 OnPropertyChanged(nameof(AllOrders));
             }
         }
+
         private string _searchTextAllOrders;
         public string SearchTextAllOrders
         {
@@ -164,11 +169,12 @@ namespace Ncs.WpfApp.ViewModels
             set { _searchTextAllOrders = value; OnPropertyChanged(); }
         }
 
+
         public ICommand SearchCommandAllOrders { get; }
         public ICommand RefreshCommandAllOrders { get; }
         public async Task LoadDataAllOrdersAsync()
         {
-            var result = await _orderService.GetOrderTodayAsync(SearchTextAllOrders, null);
+            var result = await _orderService.GetOrdersTodayAsync(SearchTextAllOrders, null);
             if (result?.Data != null && result.Success)
             {
                 Menu1Name = result.Data.Menu1Name;
@@ -237,7 +243,7 @@ namespace Ncs.WpfApp.ViewModels
             set
             {
                 _reservations = value;
-                OnPropertyChanged(nameof(Users)); // ✅ Notify UI when changed
+                OnPropertyChanged(nameof(Reservations));
             }
         }
         public ICommand SearchCommandReservations { get; }

@@ -19,8 +19,8 @@ namespace Ncs.WpfApp.Services
 
         public async Task<ApiResponseModel<UserSignInResponseModel>> SignInAsync(UserSignInModel user)
         {
-            var requestBody = new { UsernameOrEmail = user.UsernameOrEmail, Password = user.Password };
-            var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+            //var requestBody = new { UsernameOrEmail = user.UsernameOrEmail, Password = user.Password };
+            //var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
 
             var response = await HttpClientHelper.PostAsync($"{ConfigurationHelper.GetApiVersion()}/auth/login", user);
 

@@ -155,11 +155,11 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Foreground="Blue" TextDecorations="Underline" Cursor="Hand">
-                                            <Hyperlink Command="{Binding DataContext.StatusActionCommandOrders, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                       CommandParameter="{Binding OrderParameter}">
-                                                <TextBlock Text="{Binding OrderStatus}"/>
-                                            </Hyperlink>
-                                            </TextBlock>
+                <Hyperlink Command="{Binding DataContext.StatusActionCommandOrders, RelativeSource={RelativeSource AncestorType=Window}}"
+                           CommandParameter="{Binding OrdersId}">
+                    <TextBlock Text="{Binding OrderStatus}" />
+                </Hyperlink>
+            </TextBlock>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>

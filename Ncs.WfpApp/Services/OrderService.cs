@@ -53,6 +53,38 @@ namespace Ncs.WpfApp.Services
                 MessageDetail = "Unknown error"
             };
         }
+        public async Task<ApiResponseModel<bool>> SaveStatussActionAsync(string action, List<int> orderIds)
+        {
+            if (string.IsNullOrEmpty(SessionManager.AdminToken))
+            {
+                return new ApiResponseModel<bool>
+                {
+                    Success = false,
+                    Message = "Token is required.",
+                    MessageDetail = "User must be signed in to access this resource."
+                };
+            }
+
+            var response = await HttpClientHelper.PutAsync($"{ConfigurationHelper.GetApiVersion()}/orders/{action.ToLower()}-array", orderIds);
+            var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
+            if (message != "Success")
+            {
+                return new ApiResponseModel<bool>
+                {
+                    Success = false,
+                    Message = message,
+                    MessageDetail = messageDetail
+                };
+            }
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<bool>>(responseContent);
+            return apiResponse ?? new ApiResponseModel<bool>
+            {
+                Success = false,
+                Message = "Unknown error",
+                MessageDetail = "Unknown error"
+            };
+        }
         public async Task<ApiResponseModel<IEnumerable<MenuSchedulesDto>>> GetTodayMenus()
         {
 
@@ -121,7 +153,7 @@ namespace Ncs.WpfApp.Services
                 MessageDetail = "Unknown error"
             };
         }
-        public async Task<ApiResponseModel<OrderModel>> GetOrderTodayAsync(string? searchText, List<string>? orderStatuss)
+        public async Task<ApiResponseModel<OrderModel>> GetOrdersTodayAsync(string? searchText, List<string>? orderStatuss)
         {
             if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
             {
@@ -233,6 +265,48 @@ namespace Ncs.WpfApp.Services
                     Data = retval
                 };
             }
+        }
+        public async Task<ApiResponseModel<List<OrdersDto>?>> GetReservationOrdersAsync(int orderId)
+        {
+            if (string.IsNullOrEmpty(SessionManager.AdminToken) && string.IsNullOrEmpty(SessionManager.CustomerToken))
+            {
+                return new ApiResponseModel<List<OrdersDto>?>
+                {
+                    Success = false,
+                    Message = "Token is required.",
+                    MessageDetail = "User must be signed in to access this resource."
+                };
+            }
+            var response = await HttpClientHelper.GetAsync($"{ConfigurationHelper.GetApiVersion()}/orders/today");
+            var (message, messageDetail) = await ApiResponseHandler.HandleApiResponse(response);
+            if (message != "Success")
+            {
+                return new ApiResponseModel<List<OrdersDto>?>
+                {
+                    Success = false,
+                    Message = message,
+                    MessageDetail = messageDetail
+                };
+            }
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var apiResponse = JsonConvert.DeserializeObject<ApiResponseModel<IEnumerable<OrdersDto>>>(responseContent);
+            var userOrder = apiResponse?.Data?.Where(u =>u.Id == orderId).FirstOrDefault();
+            if(userOrder == null || userOrder.OrderType!= "Reservation")
+                return new ApiResponseModel<List<OrdersDto>?>
+                {
+                    Success = false,
+                    Message = $"Fetching data failed: {apiResponse?.Message ?? "Unknown error"}",
+                    MessageDetail = $"Fetching data failed: {apiResponse?.Message ?? "Unknown error"}"
+                };
+            var result = apiResponse?.Data?.Where(u => u.UserId == userOrder.UserId);
+            return new ApiResponseModel<List<OrdersDto>?>
+            {
+                Success = result != null,
+                Message = result != null ? "" : $"Fetching data failed: {apiResponse?.Message ?? "Unknown error"}",
+                MessageDetail = result != null ? "" : $"Fetching data failed: {apiResponse?.Message ?? "Unknown error"}",
+                Data = result.ToList()
+            };
         }
     }
 }
